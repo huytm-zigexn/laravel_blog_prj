@@ -62,7 +62,19 @@
                         @if ($post->medias()->first())
                             <img src="{{ $post->medias()->first()->file_path }}" class="card-img-top" alt="{{ $post->title }}">
                         @endif
-                        <div class="like_icon"><img src="images/like-icon.png"></div>
+                        <form style="margin: auto" action="{{ route('likes.store', $post->slug) }}" method="POST">
+                            @csrf
+                            @php 
+                                $hasLiked =  \App\Models\Like::where('post_id', $post->id) 
+                                    ->where('user_id', Auth::id())->exists();
+                            @endphp
+                            <button
+                                class="{{ $hasLiked ? 'liked' : '' }}"
+                                style="border-radius: 20px; padding: 8px 10px; margin-top: 10px;"
+                            >
+                                <i style="font-size: 30px" class="fa-solid fa-heart"></i>
+                            </button>
+                        </form>
                         <div class="card-body">
                             <p style="margin: 0">Published at: {{ $post->published_at }}</p>
                             <h5 class="card-title" style="font-weight: 500">{{ $post->title }}</h5>

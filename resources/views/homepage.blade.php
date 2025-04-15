@@ -16,22 +16,36 @@
         @foreach ($posts as $post)
             @if ($post == $posts->first())
                 <div class="row" style="margin-bottom: 40px">
-                    <div class="col-lg-8 col-sm-12">
+                    <div class="col-lg-7 col-sm-12" style="display: flex; justify-content: center; flex-direction: column">
                         <div class="about_img"><img src="{{ $post->medias()->first()->file_path }}"></div>
-                        <div class="like_icon"><img src="images/like-icon.png"></div>
-                        <p class="post_text">Post By: {{ $post->published_at }}</p>
-                        <h2 class="most_text">{{ $post->title }}</h2>
-                        
-                        <p class="lorem_text">{{ Str::limit($post->content, 200, '...') }}</p>
-                        <div class="social_icon_main">
-                            <div class="social_icon">
-                                <ul>
-                                    <li><a href="#"><img src="images/fb-icon.png"></a></li>
-                                    <li><a href="#"><img src="images/twitter-icon.png"></a></li>
-                                    <li><a href="#"><img src="images/instagram-icon.png"></a></li>
-                                </ul>
+                        <form style="margin: auto" action="{{ route('likes.store', $post->slug) }}" method="POST">
+                            @csrf
+                            @php 
+                                $hasLiked =  \App\Models\Like::where('post_id', $post->id) 
+                                    ->where('user_id', Auth::id())->exists();
+                            @endphp
+                            <button
+                                class="{{ $hasLiked ? 'liked' : '' }}"
+                                style="border-radius: 20px; padding: 8px 10px; margin-top: 10px;"
+                            >
+                                <i style="font-size: 30px" class="fa-solid fa-heart"></i>
+                            </button>
+                        </form>
+                        <div>
+                            <p class="post_text">Post By: {{ $post->published_at }}</p>
+                            <h2 class="most_text">{{ $post->title }}</h2>
+                            
+                            <p class="lorem_text">{{ Str::limit($post->content, 200, '...') }}</p>
+                            <div class="social_icon_main">
+                                <div class="social_icon">
+                                    <ul>
+                                        <li><a href="#"><img src="images/fb-icon.png"></a></li>
+                                        <li><a href="#"><img src="images/twitter-icon.png"></a></li>
+                                        <li><a href="#"><img src="images/instagram-icon.png"></a></li>
+                                    </ul>
+                                </div>
+                                <a href="{{ route('posts.show', $post->slug) }}" class="btn btn-outline-primary" style="padding: 20px; margin-right: 30px">Read More</a>
                             </div>
-                            <a href="{{ route('posts.show', $post->slug) }}" class="btn btn-outline-primary" style="padding: 20px; margin-right: 30px">Read More</a>
                         </div>
                     </div>
                     <div class="col-lg-4 col-sm-12">
@@ -60,22 +74,36 @@
                 </div>
             @else
                 <div class="row" style="margin-bottom: 40px">
-                    <div class="col-lg-8 col-sm-12">
+                    <div class="col-lg-7 col-sm-12" style="display: flex; justify-content: center; flex-direction: column">
                         <div class="about_img"><img src="{{ $post->medias()->first()->file_path }}"></div>
-                        <div class="like_icon"><img src="images/like-icon.png"></div>
-                        <p class="post_text">Post By : {{ $post->published_at }}</p>
-                        <h2 class="most_text">{{ $post->title }}</h2>
-                        
-                        <p class="lorem_text">{{ Str::limit($post->content, 200, '...') }}</p>
-                        <div class="social_icon_main">
-                            <div class="social_icon">
-                                <ul>
-                                    <li><a href="#"><img src="images/fb-icon.png"></a></li>
-                                    <li><a href="#"><img src="images/twitter-icon.png"></a></li>
-                                    <li><a href="#"><img src="images/instagram-icon.png"></a></li>
-                                </ul>
+                        <form style="margin: auto" action="{{ route('likes.store', $post->slug) }}" method="POST">
+                            @csrf
+                            @php 
+                                $hasLiked =  \App\Models\Like::where('post_id', $post->id) 
+                                    ->where('user_id', Auth::id())->exists();
+                            @endphp
+                            <button
+                                class="{{ $hasLiked ? 'liked' : '' }}"
+                                style="border-radius: 20px; padding: 8px 10px; margin-top: 10px;"
+                            >
+                                <i style="font-size: 30px" class="fa-solid fa-heart"></i>
+                            </button>
+                        </form>
+                        <div>
+                            <p class="post_text">Post By : {{ $post->published_at }}</p>
+                            <h2 class="most_text">{{ $post->title }}</h2>
+                            
+                            <p class="lorem_text">{{ Str::limit($post->content, 200, '...') }}</p>
+                            <div class="social_icon_main">
+                                <div class="social_icon">
+                                    <ul>
+                                        <li><a href="#"><img src="images/fb-icon.png"></a></li>
+                                        <li><a href="#"><img src="images/twitter-icon.png"></a></li>
+                                        <li><a href="#"><img src="images/instagram-icon.png"></a></li>
+                                    </ul>
+                                </div>
+                                <a href="{{ route('posts.show', $post->slug) }}" class="btn btn-outline-primary" style="padding: 20px; margin-right: 30px">Read More</a>
                             </div>
-                            <a href="{{ route('posts.show', $post->slug) }}" class="btn btn-outline-primary" style="padding: 20px; margin-right: 30px">Read More</a>
                         </div>
                     </div>
                 </div>

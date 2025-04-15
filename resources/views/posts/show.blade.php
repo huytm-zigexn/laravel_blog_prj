@@ -12,7 +12,7 @@
             <h1 class="card-title text-center fw-bold mb-4" style="font-size: 2rem;">{{ $post->title }}</h1>
             <p class="text-muted text-center mb-3">Published at: {{ $post->published_at }}</p>
             <div class="d-flex">
-                <p>Author: <a href="#"> {{$post->user->name}}</a>
+                <p>Author: <a href="{{ route('user.show', $post->user_id) }}"> {{$post->user->name}}</a>
                 </p>
             </div>
             <hr>
@@ -49,23 +49,25 @@
         <h3 class="text-center mb-4">💬 Bình luận</h3>
 
         {{-- Form gửi bình luận --}}
-        <form method="POST" class="mb-4">
+        <form action="{{ route('comments.store', $post->slug) }}" method="POST" class="mb-4">
             @csrf
             <div class="mb-3">
-                <textarea name="comment" class="form-control" rows="3" placeholder="Viết bình luận..." required></textarea>
+                <textarea name="content" class="form-control" rows="3" placeholder="Viết bình luận..." required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Gửi bình luận</button>
+            <button type="submit" class="btn btn-primary">Send</button>
         </form>
 
         {{-- Danh sách bình luận --}}
         @forelse($post->comments as $comment)
-            <div class="border rounded p-3 mb-3 bg-light">
-                <strong>{{ $comment->user->name ?? 'Ẩn danh' }}</strong> 
-                <small class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
-                <p class="mt-2 mb-0">{{ $comment->content }}</p>
-            </div>
+            @if ($comment->is_allowed == 1)
+                <div class="border rounded p-3 mb-3 bg-light">
+                    <strong>{{ $comment->user->name ?? 'Ẩn danh' }}</strong> 
+                    <small class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
+                    <p class="mt-2 mb-0">{{ $comment->content }}</p>
+                </div>
+            @endif
         @empty
-            <p class="text-muted">Chưa có bình luận nào.</p>
+            <h1>Chưa có bình luận nào.</h1>
         @endforelse
     </div>
 </div>
