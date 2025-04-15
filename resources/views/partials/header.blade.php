@@ -28,10 +28,10 @@
                         </li>
                     @else
                         <li class="nav-item">
-                            <a class="nav-link" href={{ route('get_register') }}>Register</a>
+                            <a class="nav-link" href={{ route('getRegister') }}>Register</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href={{ route('get_login') }}>Login</a>
+                            <a class="nav-link" href={{ route('getLogin') }}>Login</a>
                         </li>
                     @endauth
                     <li class="nav-item">

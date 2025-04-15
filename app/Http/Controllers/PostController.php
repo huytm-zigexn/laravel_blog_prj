@@ -23,17 +23,9 @@ class PostController extends Controller
             });
         }
         
-        // Filter by tag
-        if ($request->has('tag') && !empty($request->tag)) {
-            $tagSlug = $request->tag;
-            $query->whereHas('tags', function ($q) use ($tagSlug) {
-                $q->where('slug', $tagSlug);
-            });
-        }
-        
         // Kết hợp nhiều tag (AND logic)
         if ($request->has('tags') && !empty($request->tags)) {
-            $tagSlugs = explode(',', $request->tags);
+            $tagSlugs = $request->tags;
             foreach ($tagSlugs as $tagSlug) {
                 $query->whereHas('tags', function ($q) use ($tagSlug) {
                     $q->where('slug', trim($tagSlug));
@@ -46,7 +38,7 @@ class PostController extends Controller
         return view('posts.index', compact('posts', 'categories', 'tags'));
     }
 
-    public function most_views_posts()
+    public function mostViewsPosts()
     {
         $posts = Post::where('status', 'published')
              ->withCount('viewedByUsers')
@@ -60,11 +52,11 @@ class PostController extends Controller
     public function show(string $slug)
     {
         $post = Post::where('slug', $slug)->firstOrFail();
-        $relatedPosts = self::related_posts($post);
+        $relatedPosts = self::relatedPosts($post);
         return view('posts.show', compact('post', 'relatedPosts'));
     }
     
-    private static function related_posts($post)
+    private static function relatedPosts($post)
     {
         $relatedPosts = Post::where('status', 'published')
                     ->where('category_id', $post->category_id)

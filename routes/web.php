@@ -5,15 +5,15 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/register', [UserController::class, 'get_register'])->name('get_register');
+Route::get('/register', [UserController::class, 'getRegister'])->name('getRegister');
 Route::post('/register', [UserController::class, 'register'])->name('register');
 
-Route::get('/login', [UserController::class, 'get_login'])->name('get_login');
+Route::get('/login', [UserController::class, 'getLogin'])->name('getLogin');
 Route::post('/login', [UserController::class, 'login'])->name('login');
 
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
-Route::get('/', [PostController::class, 'most_views_posts'])->name('app');
+Route::get('/', [PostController::class, 'mostViewsPosts'])->name('app');
 
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 

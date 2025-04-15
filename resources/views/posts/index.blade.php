@@ -3,7 +3,7 @@
 @section('title', 'All Posts')
 
 @section('content')
-    <h1 class="text-center mb-5" style="font-weight: bold; font-size: 35px">All Posts</h1>
+    <h1 class="text-center mb-5" style="font-weight: bold; font-size: 35px; margin-top: 80px">All Posts</h1>
     <div class="row" style="margin-left: 20px">
         <div class="col-md-3">
             <div class="filter-sidebar">
@@ -32,14 +32,16 @@
                             <div class="tag-list">
                                 @foreach($tags as $tag)
                                 <div class="form-check">
-                                    <input type="checkbox" name="selected_tags[]" value="{{ $tag->slug }}" 
+                                    <input type="checkbox" name="tags[]" value="{{ $tag->slug }}" 
                                         class="form-check-input tag-checkbox"
-                                        {{ in_array($tag->slug, explode(',', request('tags', ''))) ? 'checked' : '' }}>
+                                        @php
+                                            $selectedTags = array_filter((array) request('tags')); // loại bỏ các giá trị rỗng
+                                        @endphp
+                                        {{ in_array($tag->slug, $selectedTags) ? 'checked' : '' }}>
                                     <label class="form-check-label">{{ $tag->name }}</label>
                                 </div>
                                 @endforeach
                             </div>
-                            <input type="hidden" name="tags" id="tags-input" value="{{ request('tags') }}">
                         </div>
                     </div>
                     <div class="filter-actions">
@@ -50,38 +52,37 @@
             </div>
         </div>
     </div>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" style="margin: 20px">
+    <div class="row" style="margin: 20px">
         @if ($posts->count() <= 0)
-            <p>ko</p>
-        @endif
-        @foreach ($posts as $post)
-            <div class="col" style="min-width: 350px; margin-bottom: 30px">
-                <div class="card h-40 shadow-sm border-0 rounded-4 overflow-hidden" style="min-height: 500px; max-height: 600px">
-                    @if ($post->medias()->first())
-                        <img src="{{ $post->medias()->first()->file_path }}" class="card-img-top" alt="{{ $post->title }}">
-                    @endif
-                    <div class="like_icon"><img src="images/like-icon.png"></div>
-                    <div class="card-body">
-                        <p style="margin: 0">Published at: {{ $post->published_at }}</p>
-                        <h5 class="card-title" style="font-weight: 500">{{ $post->title }}</h5>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between align-items-center bg-white border-0">
-                        <div class="social_icon d-flex gap-2" style="padding: 20px 0">
-                            <a href="#"><img src="images/fb-icon.png" width="28" height="28" /></a>
-                            <a href="#"><img src="images/twitter-icon.png" width="28" height="28" /></a>
-                            <a href="#"><img src="images/instagram-icon.png" width="28" height="28" /></a>
+            <h1>Can't find suitable blogs</h1>
+        @else
+            @foreach ($posts as $post)
+                <div class="col" style="margin-bottom: 30px; max-width: 400px;">
+                    <div class="card h-40 shadow-sm border-0 rounded-4 overflow-hidden" style="min-height: 400px;">
+                        @if ($post->medias()->first())
+                            <img src="{{ $post->medias()->first()->file_path }}" class="card-img-top" alt="{{ $post->title }}">
+                        @endif
+                        <div class="like_icon"><img src="images/like-icon.png"></div>
+                        <div class="card-body">
+                            <p style="margin: 0">Published at: {{ $post->published_at }}</p>
+                            <h5 class="card-title" style="font-weight: 500">{{ $post->title }}</h5>
                         </div>
-                        <a href="{{ route('posts.show', $post->slug) }}" class="btn btn-sm btn-outline-primary rounded-pill">Read More</a>
+                        <div class="card-footer d-flex justify-content-between align-items-center bg-white border-0">
+                            <div class="social_icon d-flex gap-2" style="padding: 20px 0">
+                                <a href="#"><img src="images/fb-icon.png" width="28" height="28" /></a>
+                                <a href="#"><img src="images/twitter-icon.png" width="28" height="28" /></a>
+                                <a href="#"><img src="images/instagram-icon.png" width="28" height="28" /></a>
+                            </div>
+                            <a href="{{ route('posts.show', $post->slug) }}" class="btn btn-sm btn-outline-primary rounded-pill">Read More</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endforeach
+            @endforeach
+        @endif
     </div>
-{{-- <div class="container py-5">
-</div> --}}
 @endsection
 
-{{-- @section('scripts')
+@section('scripts')
 <script>
     $(document).ready(function() {
         // Xử lý chọn nhiều tag
@@ -111,4 +112,4 @@
         });
     });
 </script>
-@endsection --}}
+@endsection

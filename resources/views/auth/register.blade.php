@@ -28,23 +28,22 @@
         </div>
     </div>
     <div class="container" style="margin-bottom: 150px">
-        @if ($errors->any())
-            <div style="color: red;">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-    
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="card shadow rounded-4">
                         <div class="card-body">
                             <h1 class="mb-4 text-center" style="font-weight: bold">Register</h1>
-        
+    
+                            @if ($errors->any())
+                                <div style="color: red;">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
                             <form action="{{ route('register') }}" method="POST">
                                 @csrf
         
@@ -71,6 +70,11 @@
                                     <label for="password" class="form-label">Password</label>
                                     <input type="password" class="form-control" name="password" id="password" placeholder="Create a password" required>
                                 </div>
+
+                                <div class="mb-3">
+                                    <label for="password_confirmation" class="form-label">Password Confirmation</label>
+                                    <input type="password" class="form-control" name="password_confirmation" id="password" placeholder="Re-enter password" required>
+                                </div>
         
                                 <!-- Submit Button -->
                                 <div class="d-grid">
@@ -80,7 +84,7 @@
                                 <!-- Login Link -->
                                 <div class="mt-3 text-center">
                                     Already have an account? 
-                                    <a href="{{ route('get_login') }}">Login</a>
+                                    <a href="{{ route('getLogin') }}">Login</a>
                                 </div>
                             </form>
                         </div>

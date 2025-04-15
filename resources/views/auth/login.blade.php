@@ -80,7 +80,7 @@
                                 <!-- Login Link -->
                                 <div class="mt-3 text-center">
                                     New user? 
-                                    <a href="{{ route('get_register') }}">Register</a>
+                                    <a href="{{ route('getRegister') }}">Register</a>
                                 </div>
                             </form>
                         </div>

@@ -24,8 +24,12 @@ class RegisterRequestValidate extends FormRequest
         return [
             'name'=> 'required|string|max:30',
             'email' => 'required|unique:users,email|string',
-            'password' => 'required|min:6|string',
-            'phone' => 'required|string|max:20',
+            'password' => 'required|min:6|string|confirmed',
+            'phone' => [
+                'required',
+                'string',
+                'regex:/^(\\+84\\d{9}|0\\d{9})$/'
+            ],
             'role' => 'in:admin,author,reader',
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ];

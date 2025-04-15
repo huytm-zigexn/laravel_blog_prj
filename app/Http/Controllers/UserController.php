@@ -32,7 +32,7 @@ class UserController extends Controller
         return redirect('/');
     }
 
-    public function get_register()
+    public function getRegister()
     {
         return view('auth.register');
     }
@@ -52,7 +52,7 @@ class UserController extends Controller
         ])->onlyInput('email');
     }
 
-    public function get_login()
+    public function getLogin()
     {
         return view('auth.login');
     }
