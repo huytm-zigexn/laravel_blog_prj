@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
 
         Category::factory(5)->create();
         Tag::factory(10)->create();
-        ModelsNotification::factory(20)->create();
+        // ModelsNotification::factory(20)->create();
 
         // Seed Posts with Tags, Media, and Media_Post relationship
         Post::factory(20)->create()->each(function ($post) {

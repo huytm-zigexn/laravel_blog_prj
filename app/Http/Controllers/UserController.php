@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\FollowNotify;
 use App\Http\Requests\EditUserProfileValidate;
 use App\Http\Requests\LoginRequestValidate;
 use App\Http\Requests\RegisterRequestValidate;
@@ -9,9 +10,11 @@ use App\Http\Requests\ResetPasswordRequestValidate;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\User;
+use App\Notifications\UserFollowed;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Pusher\Pusher;
 
 class UserController extends Controller
 {
@@ -122,14 +125,22 @@ class UserController extends Controller
     public function follow($id)
     {
         $user = User::findOrFail($id);
+        $follower = Auth::user();
         if (Auth::id() === $user->id) {
             return redirect()->back()->with('error', 'You can not follow yourself!');
         }
 
-        $result = Auth::user()->followings()->toggle($user->id);
-
+        $result = $follower->followings()->toggle($user->id);
+        
         if (count($result['attached']) > 0) {
             $message = 'Followed ' . $user->name;
+            event(new FollowNotify([
+                'message' => $follower->name . 'has followed you',
+                'follower_id' => $follower->id,
+                'follower_name' => $follower->name,
+                'follower_avatar' => $follower->avatar
+            ]));
+            $user->notify(new UserFollowed($follower));
         } elseif (count($result['detached']) > 0) {
             $message = 'Unfollowed ' . $user->name;
         } else {
@@ -145,5 +156,10 @@ class UserController extends Controller
         $posts = Post::whereIn('id', $postsId)->get();
 
         return view('account.likedList', compact('posts'));
+    }
+
+    public function notifications()
+    {
+        return Auth::user()->unreadNotifications()->limit(5)->get()->toArray();
     }
 }

@@ -31,4 +31,6 @@ Route::middleware('auth')->group(function() {
     Route::put('/users/{id}/update-password', [UserController::class, 'updatePassword'])->name('user.updatePassword');
     Route::post('/users/{id}/follow', [UserController::class, 'follow'])->name('user.follow');
     Route::get('users/{id}/liked-posts-list', [UserController::class, 'likedPostsList'])->name('user.like');
+
+    Route::get('/notifications', [UserController::class, 'notifications'])->name('follow.noti');
 });

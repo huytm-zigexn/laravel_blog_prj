@@ -64,11 +64,6 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
-    public function notifications()
-    {
-        return $this->hasMany(Notification::class);
-    }
-
     public function likedPosts()
     {
         return $this->belongsToMany(Post::class, 'likes')->withTimestamps();
@@ -82,5 +77,10 @@ class User extends Authenticatable
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function isFollowing($userId)
+    {
+        return (boolean) $this->followings()->where('followed_id', $userId)->first();
     }
 }

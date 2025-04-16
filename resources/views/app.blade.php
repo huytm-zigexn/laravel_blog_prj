@@ -31,7 +31,8 @@
         <link rel="stylesheet" href="{{ asset('css/owl.carousel.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/owl.theme.default.min.css') }}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
-
+        <!-- Scripts -->
+        <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
     </head>
     <body>
         @include('partials/header')
@@ -50,6 +51,7 @@
         <script src="js/custom.js"></script>
         <!-- javascript --> 
         <script src="js/owl.carousel.js"></script>
+        <script src="{{ asset('js/app.js') }}"></script>
         <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
     </body>
 </html>
