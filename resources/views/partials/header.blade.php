@@ -84,6 +84,9 @@
                             </div>
                         </li>
                         <li class="nav-item">
+                            <a href="{{ route('posts.create') }}">Create post</a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('user.show', Auth::id()) }}" class="nav-link">
                                 @if(Auth::user()->avatar)
                                     <img src="{{ asset(Auth::user()->avatar) }}" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">

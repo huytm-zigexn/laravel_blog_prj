@@ -4,6 +4,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\EnsureHasRole;
 use Illuminate\Support\Facades\Route;
 
 
@@ -19,7 +20,7 @@ Route::get('/', [PostController::class, 'mostViewsPosts'])->name('app');
 
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 
-Route::get('/posts/{slug}', [PostController::class, 'show'])->name('posts.show');
+
 Route::post('/posts/{slug}/comments', [CommentController::class, 'store'])->name('comments.store');
 
 Route::middleware('auth')->group(function() {
@@ -33,4 +34,10 @@ Route::middleware('auth')->group(function() {
     Route::get('users/{id}/liked-posts-list', [UserController::class, 'likedPostsList'])->name('user.like');
 
     Route::get('/notifications', [UserController::class, 'notifications'])->name('follow.noti');
+
+    Route::middleware(EnsureHasRole::class.':admin,author')->group(function() {
+        Route::get('/posts/create', [PostController::class, 'getCreate'])->name('posts.create');
+    });
 });
+
+Route::get('/posts/{slug}', [PostController::class, 'show'])->name('posts.show');

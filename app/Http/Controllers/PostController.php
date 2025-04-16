@@ -55,6 +55,11 @@ class PostController extends Controller
         $relatedPosts = self::relatedPosts($post);
         return view('posts.show', compact('post', 'relatedPosts'));
     }
+
+    public function getCreate()
+    {
+        return view('posts.create');
+    }
     
     private static function relatedPosts($post)
     {
