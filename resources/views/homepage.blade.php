@@ -5,19 +5,22 @@
 @section('content')
     <!-- banner section start --> 
     <div class="container-fluid">
-        <div class="banner_section d-flex justify-content-center align-items-center home-banner">
+        <div style="margin-bottom: 100px" class="banner_section d-flex justify-content-center align-items-center home-banner">
             <h1 class="banner_taital" style="">welcome <br>our blog</h1>
         </div>
     </div>
-    <!-- banner section end --> 
-
+    <!-- banner section end -->
+    
     <div class="container">
+        @if (notReader(Auth::user()))
+            <a style="margin-bottom: 100px; font-size: 28px" class="btn btn-primary" href="{{ route(Auth::user()->role . '.posts.create') }}">Create post</a>
+        @endif
         <h1 style="font-weight: bold; font-size: 40px; margin-bottom: 40px">Most views posts</h1>
         @foreach ($posts as $post)
             @if ($post == $posts->first())
                 <div class="row" style="margin-bottom: 40px">
                     <div class="col-lg-7 col-sm-12" style="display: flex; justify-content: center; flex-direction: column">
-                        <div class="about_img"><img src="{{ $post->medias()->first()->file_path }}"></div>
+                        <div class="about_img"><img src="{{ $post->thumbnail }}"></div>
                         <form style="margin: auto" action="{{ route('likes.store', $post->slug) }}" method="POST">
                             @csrf
                             @php 
@@ -75,15 +78,11 @@
             @else
                 <div class="row" style="margin-bottom: 40px">
                     <div class="col-lg-7 col-sm-12" style="display: flex; justify-content: center; flex-direction: column">
-                        <div class="about_img"><img src="{{ $post->medias()->first()->file_path }}"></div>
+                        <div class="about_img"><img src="{{ $post->thumbnail }}"></div>
                         <form style="margin: auto" action="{{ route('likes.store', $post->slug) }}" method="POST">
                             @csrf
-                            @php 
-                                $hasLiked =  \App\Models\Like::where('post_id', $post->id) 
-                                    ->where('user_id', Auth::id())->exists();
-                            @endphp
                             <button
-                                class="{{ $hasLiked ? 'liked' : '' }}"
+                                class="{{ hasLiked($post) ? 'liked' : '' }}"
                                 style="border-radius: 20px; padding: 8px 10px; margin-top: 10px;"
                             >
                                 <i style="font-size: 30px" class="fa-solid fa-heart"></i>

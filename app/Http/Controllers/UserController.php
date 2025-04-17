@@ -14,7 +14,6 @@ use App\Notifications\UserFollowed;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Pusher\Pusher;
 
 class UserController extends Controller
 {
@@ -156,10 +155,5 @@ class UserController extends Controller
         $posts = Post::whereIn('id', $postsId)->get();
 
         return view('account.likedList', compact('posts'));
-    }
-
-    public function notifications()
-    {
-        return Auth::user()->unreadNotifications()->limit(5)->get()->toArray();
     }
 }

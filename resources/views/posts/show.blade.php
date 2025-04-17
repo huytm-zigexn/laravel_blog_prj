@@ -5,8 +5,8 @@
 @section('content')
 <div class="container">
     <div class="mt-5 card d-flex justify-content-center align-items-center shadow-lg border-0 rounded-4" style="max-width: 1200px; width: 100%;">
-        @if ($post->medias()->first())
-            <img src="{{ asset($post->medias()->first()->file_path) }}" class="card-img-top rounded-top-4" alt="{{ $post->title }}">
+        @if ($post->thumbnail)
+            <img src="{{ asset($post->thumbnail) }}" class="card-img-top rounded-top-4" alt="{{ $post->title }}">
         @endif
         <div class="card-body p-4">
             <h1 class="card-title text-center fw-bold mb-4" style="font-size: 2rem;">{{ $post->title }}</h1>
@@ -17,7 +17,7 @@
             </div>
             <hr>
             <div class="card-text" style="font-size: 1.1rem;">
-                {!! nl2br(e($post->content)) !!}
+                {!! $post->content !!}
             </div>
         </div>
     </div>
@@ -30,8 +30,8 @@
                 @foreach($relatedPosts as $related)
                     <div class="col-md-4 mb-4">
                         <div class="card h-100">
-                            @if ($related->medias()->first())
-                                <img src="{{ asset($related->medias()->first()->file_path) }}" class="card-img-top" alt="{{ $related->title }}">
+                            @if ($related->thumbnail)
+                                <img src="{{ asset($related->thumbnail) }}" class="card-img-top" alt="{{ $related->title }}">
                             @endif
                             <div class="card-body">
                                 <h5 class="card-title">{{ Str::limit($related->title, 50) }}</h5>

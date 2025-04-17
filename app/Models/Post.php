@@ -14,6 +14,7 @@ class Post extends Model
         'title',
         'slug',
         'content',
+        'thumbnail',
         'is_crawled',
         'source_url',
         'source_name',
@@ -47,11 +48,6 @@ class Post extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
-    }
-
-    public function medias()
-    {
-        return $this->belongsToMany(Media::class, 'media_post', 'post_id', 'media_id');
     }
 
     public function comments()

@@ -41,14 +41,6 @@ class DatabaseSeeder extends Seeder
             // Attach random tags (1-3)
             $tagIds = Tag::inRandomOrder()->take(rand(1, 3))->pluck('id');
             $post->tags()->attach($tagIds);
-
-            // Create 1 media per post (all use same sample.jpg)
-            $media = Media::factory()->create([
-                'user_id' => $post->user_id,
-            ]);
-
-            // Link media to post via media_post
-            $post->medias()->attach($media->id);
         });
 
         // Seed Likes

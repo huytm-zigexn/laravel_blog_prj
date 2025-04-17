@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ImageRequestValidate;
+use App\Http\Requests\PostRequestValidate;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class PostController extends Controller
 {
     public function index(Request $request)
     {
         $query = Post::where('status', 'published')
-                     ->with('medias')
                      ->orderBy('published_at', 'desc');
         
         // Filter by category
@@ -58,7 +62,54 @@ class PostController extends Controller
 
     public function getCreate()
     {
-        return view('posts.create');
+        $categories = Category::orderBy('name')->get();
+        return view('posts.create', compact('categories'));
+    }
+
+    public function store(PostRequestValidate $request)
+    {
+        $thumbnailPath = null;
+        
+        if ($request->hasFile('thumbnail')) {
+            $thumbnailPath = 'storage/' . $request->file('thumbnail')->store('thumbnails', 'public');
+        }
+        $slug = Str::slug($request->title);
+        $originalSlug = $slug;
+        $counter = 1;
+
+        while(Post::where('slug', $slug)->exists())
+        {
+            $slug = $originalSlug . '-' . $counter++;
+        }
+
+        $status = $request->status === 'Publish' ? 'published' : 'draft';
+
+        $post = Post::create([
+            'title' => $request->title,
+            'slug' => $slug,
+            'content' => $request->content,
+            'thumbnail' => $thumbnailPath,
+            'category_id' => $request->category_id,
+            'status' => $status,
+            'published_at' => $status === 'published' ? now() : null,
+            'user_id' => Auth::id()
+        ]);
+
+        return redirect()->route('posts.index')->with('success', 'Post created successfully');
+    }
+
+    public function imgUpload (ImageRequestValidate $request)
+    {
+        $thumbnailPath = null;
+        
+        if ($request->hasFile('file')) {
+            $thumbnailPath = $request->file('file')->store('thumbnails', 'public');
+            return response()->json([
+                'location' => asset('storage/' . $thumbnailPath)
+            ]);
+        }
+        
+        return response()->json(['error' => 'No file uploaded'], 400);
     }
     
     private static function relatedPosts($post)

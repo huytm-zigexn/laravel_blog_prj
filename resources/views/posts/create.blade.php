@@ -3,29 +3,49 @@
 
 @section('title', 'Create Post')
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.1.0/tinymce.min.js"></script>
-
 @section('content')
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">Tạo bài viết mới</div>
+                <div class="card" style="margin: 50px 0">
+                    <div class="card-header">Create new post</div>
                     <div class="card-body">
-                        <form method="POST">
+                        @if ($errors->any())
+                            <div style="color: red;">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        <form action="{{ route('admin.posts.store') }}" method="post" enctype="multipart/form-data">
                             @csrf
-                            
                             <div class="form-group">
-                                <label for="title">Tiêu đề</label>
+                                <label for="title">Title</label>
                                 <input type="text" class="form-control" id="title" name="title" required>
                             </div>
-                            
                             <div class="form-group">
-                                <label for="content">Nội dung</label>
-                                <textarea id="content" name="content"></textarea>
+                                <label for="category">Category</label>
+                                <select name="category_id" class="form-control filter-select">
+                                    <option value="">Select a category</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" {{ request('category') == $category->slug ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach 
+                                </select>
                             </div>
-                            
-                            <button type="submit" class="btn btn-primary">Lưu bài viết</button>
+                            <div class="form-group">
+                                <label for="content">Content</label>
+                                <textarea name="content" id="myeditorinstance"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="thumbnail">Thumbnail</label><br>
+                                <input type="file" name="thumbnail" required>
+                            </div>
+                            <input type="submit" name="status" class="btn btn-primary" value="Save draft">
+                            <input type="submit" name="status" class="btn btn-success" value="Publish">
                         </form>
                     </div>
                 </div>
@@ -33,49 +53,3 @@
         </div>
     </div>
 @endsection
-{{-- 
-@section('scripts')
-<script>
-    tinymce.init({
-        selector: '#content',
-        plugins: 'image code link lists table',
-        toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | image link | code',
-        
-        // Cấu hình upload ảnh
-        images_upload_url: '{{ route("upload.image") }}',
-        images_upload_credentials: true, // Gửi kèm cookie và headers (cần thiết cho CSRF)
-        automatic_uploads: true,
-        
-        // File picker cho việc upload
-        file_picker_types: 'image',
-        file_picker_callback: function(callback, value, meta) {
-            // Tạo input file ẩn
-            var input = document.createElement('input');
-            input.setAttribute('type', 'file');
-            input.setAttribute('accept', 'image/*');
-            
-            input.onchange = function() {
-                // Khi user chọn file
-                var file = this.files[0];
-                
-                // Đọc file thành base64 để hiển thị preview
-                var reader = new FileReader();
-                reader.onload = function() {
-                    var id = 'blobid' + (new Date()).getTime();
-                    var blobCache = tinymce.activeEditor.editorUpload.blobCache;
-                    var base64 = reader.result.split(',')[1];
-                    var blobInfo = blobCache.create(id, file, base64);
-                    blobCache.add(blobInfo);
-                    
-                    // Callback với URL ảnh tạm thời (sẽ được thay thế sau khi upload)
-                    callback(blobInfo.blobUri(), { title: file.name });
-                };
-                reader.readAsDataURL(file);
-            };
-            
-            // Mở dialog chọn file
-            input.click();
-        }
-    });
-</script>
-@endsection --}}

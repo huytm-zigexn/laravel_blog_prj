@@ -50,17 +50,6 @@
                                 >
                                     {{ Auth::user()->isFollowing($user->id) ? 'Unfollow' : 'Follow' }}
                                 </button>
-                                {{-- @php 
-                                    $hasFollowed =  \App\Models\Follow::where('follower_id', Auth::id()) 
-                                        ->where('followed_id', $user->id)->exists();
-                                @endphp
-                                @if ($user->id !== Auth::id())
-                                    @if ($hasFollowed)
-                                        <button class="btn btn-danger">Unfollow</button>
-                                    @else
-                                        <button class="btn btn-primary">Follow</button>
-                                    @endif
-                                @endif --}}
                             </form>
                         @endif
 
@@ -88,7 +77,12 @@
             </div>
 
             <div class="col-md-8">
-                <h3 class="mb-4">{{ $user->name }}'s posts</h3>
+                <div class="d-flex align-items-center mb-4" style="justify-content: space-between">
+                    <h3>{{ $user->name }}'s posts</h3>
+                    @if (notReader(Auth::user()))
+                        <a style="" class="btn btn-primary" href="{{ route(Auth::user()->role . '.posts.create') }}">Create post</a>
+                    @endif
+                </div>
                 @if ($user->posts->count() > 0)
                     @foreach ($user->posts as $post)
                         <div class="card mb-3 shadow-sm border-0 rounded-3">

@@ -84,8 +84,8 @@ class User extends Authenticatable
         return (boolean) $this->followings()->where('followed_id', $userId)->first();
     }
 
-    public function hasAnyRole(array $roles): bool
+    public function hasRole(string $role): bool
     {
-        return in_array($this->role, $roles);
+        return $this->role === $role;
     }
 }

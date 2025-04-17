@@ -8,8 +8,8 @@
         @foreach ($posts as $post)
             <div class="col" style="margin-bottom: 30px; max-width: 400px;">
                 <div class="card h-40 shadow-sm border-0 rounded-4 overflow-hidden" style="min-height: 400px;">
-                    @if ($post->medias()->first())
-                        <img src="{{ asset($post->medias()->first()->file_path) }}" class="card-img-top" alt="{{ $post->title }}">
+                    @if ($post->thumbnail)
+                        <img src="{{ asset($post->thumbnail) }}" class="card-img-top" alt="{{ $post->title }}">
                     @endif
                     <form style="margin: auto" action="{{ route('likes.store', $post->slug) }}" method="POST">
                         @csrf

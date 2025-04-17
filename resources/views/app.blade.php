@@ -8,6 +8,7 @@
         <!-- mobile metas -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <!-- site metas -->
         <title>Blog @hasSection('title') | @yield('title') @endif</title>
         <meta name="keywords" content="">
@@ -16,8 +17,11 @@
         <!-- bootstrap css -->
         <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.min.css') }}">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
         <!-- style css -->
         <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+        <link rel="stylesheet" href="{{ asset('vendor/file-manager/css/file-manager.css') }}">
         <!-- Responsive-->
         <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
         <!-- fevicon -->
@@ -33,6 +37,76 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
         <!-- Scripts -->
         <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
+        <script src="{{ asset('vendor/file-manager/js/file-manager.js') }}"></script>
+
+        <script src="https://cdn.tiny.cloud/1/{{ env('TINYMCE_API_KEY') }}/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+        <script>
+            tinymce.init({
+                selector: 'textarea#myeditorinstance', // Replace this CSS selector to match the placeholder element for TinyMCE
+                plugins: 'code table lists image',
+                toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | indent outdent | bullist numlist | code | table | image',
+                file_picker_types: 'image',
+                placeholder: 'Type content here...',
+                images_upload_url: '{{ route('admin.img.upload') }}',
+                images_upload_credentials: true,
+                images_upload_headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+
+                // thêm headers với CSRF token
+                images_upload_handler: (blobInfo, progress) => {
+                    return new Promise((resolve, reject) => {
+                        const xhr = new XMLHttpRequest();
+                        xhr.withCredentials = true;
+                        xhr.open('POST', '{{ route('admin.img.upload') }}');
+
+                        xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+                        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                        xhr.setRequestHeader('Accept', 'application/json');
+
+                        xhr.upload.onprogress = (e) => {
+                            progress(e.loaded / e.total * 100);
+                        };
+
+                        xhr.onload = () => {
+                            if (xhr.status === 403) {
+                                reject({ message: 'HTTP Error: ' + xhr.status, remove: true });
+                                return;
+                            }
+
+                            if (xhr.status < 200 || xhr.status >= 300) {
+                                reject('HTTP Error: ' + xhr.status);
+                                return;
+                            }
+
+                            try {
+                                const json = JSON.parse(xhr.responseText);
+
+                                if (!json || typeof json.location !== 'string') {
+                                    reject('Invalid JSON: ' + xhr.responseText);
+                                    return;
+                                }
+
+                                resolve(json.location);
+                            } catch (e) {
+                                reject('Could not parse JSON: ' + e.message);
+                            }
+                        };
+
+                        xhr.onerror = () => {
+                            reject('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
+                        };
+
+                        const formData = new FormData();
+                        formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+                        xhr.send(formData);
+                    });
+                }
+            });
+        </script>
     </head>
     <body>
         @include('partials/header')

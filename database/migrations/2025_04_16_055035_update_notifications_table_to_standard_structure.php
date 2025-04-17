@@ -8,6 +8,7 @@ class UpdateNotificationsTableToStandardStructure extends Migration
 {
     public function up()
     {   
+        Schema::dropIfExists('notifications');
         Schema::create('notifications', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('type');

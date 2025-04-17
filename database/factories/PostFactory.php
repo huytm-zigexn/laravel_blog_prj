@@ -26,6 +26,7 @@ class PostFactory extends Factory
             'title' => $title,
             'slug' => Str::slug($title),
             'content' => $this->faker->paragraphs(5, true),
+            'thumbnail' => 'uploads/sample.jpg',
             'is_crawled' => false,
             'source_url' => null,
             'source_name' => null,

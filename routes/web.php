@@ -35,8 +35,15 @@ Route::middleware('auth')->group(function() {
 
     Route::get('/notifications', [UserController::class, 'notifications'])->name('follow.noti');
 
-    Route::middleware(EnsureHasRole::class.':admin,author')->group(function() {
-        Route::get('/posts/create', [PostController::class, 'getCreate'])->name('posts.create');
+    Route::prefix('admin')->middleware(EnsureHasRole::class.':admin')->group(function() {
+        Route::post('/img-upload', [PostController::class, 'imgUpload'])->name('admin.img.upload');
+        Route::get('/posts/create', [PostController::class, 'getCreate'])->name('admin.posts.create');
+        Route::post('/posts/store', [PostController::class, 'store'])->name('admin.posts.store');
+    });
+
+    Route::prefix('author')->middleware(EnsureHasRole::class.':author')->group(function() {
+        Route::get('/posts/create', [PostController::class, 'getCreate'])->name('author.posts.create');
+        Route::post('/posts/store', [PostController::class, 'store'])->name('author.posts.store');
     });
 });
 
