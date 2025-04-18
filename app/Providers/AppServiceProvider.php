@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Like;
 use App\Models\Notification;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ImageRequestValidate;
 use App\Http\Requests\PostRequestValidate;
+use App\Http\Requests\PostUpdateRequestValidate;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
@@ -95,7 +96,7 @@ class PostController extends Controller
             'user_id' => Auth::id()
         ]);
 
-        return redirect()->route('posts.index')->with('success', 'Post created successfully');
+        return redirect()->route('user.show', Auth::id())->with('success', 'Post created successfully');
     }
 
     public function imgUpload (ImageRequestValidate $request)
@@ -110,6 +111,60 @@ class PostController extends Controller
         }
         
         return response()->json(['error' => 'No file uploaded'], 400);
+    }
+
+    public function publish(string $slug)
+    {
+        $post = Post::where('slug', $slug)->firstOrFail();
+        $post->status = 'published';
+        $post->save();
+
+        return redirect()->back()->with('success', 'Post published successfully');
+    }
+
+    public function edit(string $slug)
+    {
+        $post = Post::where('slug', $slug)->firstOrFail();
+        $categories = Category::orderBy('name')->get();
+        return view('posts.update', compact('categories', 'post'));
+    }
+
+    public function update(PostUpdateRequestValidate $request, string $slug)
+    {   
+        $post = Post::where('slug', $slug)->firstOrFail();
+        if ($request->hasFile('thumbnail')) {
+            $thumbnailPath = 'storage/' . $request->file('thumbnail')->store('thumbnails', 'public');
+            $post->thumbnail = $thumbnailPath;
+        }
+
+        if($request->title !== $post->title)
+        {
+            $slug = Str::slug($request->title);
+            $originalSlug = $slug;
+            $counter = 1;
+    
+            while(Post::where('slug', $slug)->exists())
+            {
+                $slug = $originalSlug . '-' . $counter++;
+            }
+
+            $post->slug = $slug;
+        }
+
+        $post->title = $request->title;
+        $post->content = $request->content;
+        $post->category_id = $request->category_id;
+        
+        $post->save();
+
+        return redirect()->route('posts.index')->with('success', 'Post created successfully');
+    }
+
+    public function delete(string $slug)
+    {
+        $post = Post::where('slug', $slug)->firstOrFail();
+        $post->delete();
+        return redirect()->back()->with('success', 'Task deleted successfully!');
     }
     
     private static function relatedPosts($post)
