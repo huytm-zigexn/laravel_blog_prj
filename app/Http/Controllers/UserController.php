@@ -124,22 +124,22 @@ class UserController extends Controller
     public function follow($id)
     {
         $user = User::findOrFail($id);
-        $follower = Auth::user();
+        $authUser = Auth::user();
         if (Auth::id() === $user->id) {
             return redirect()->back()->with('error', 'You can not follow yourself!');
         }
 
-        $result = $follower->followings()->toggle($user->id);
+        $result = $authUser->followings()->toggle($user->id);
         
         if (count($result['attached']) > 0) {
             $message = 'Followed ' . $user->name;
             event(new FollowNotify([
-                'message' => $follower->name . 'has followed you',
-                'follower_id' => $follower->id,
-                'follower_name' => $follower->name,
-                'follower_avatar' => $follower->avatar
+                'message' => '<a href="' . route('user.show', $authUser->id) . '">' . $authUser->name . '</a>' . ' has followed you!',
+                'user_id' => $authUser->id,
+                'user_name' => $authUser->name,
+                'user_avatar' => $authUser->avatar
             ]));
-            $user->notify(new UserFollowed($follower));
+            $user->notify(new UserFollowed($authUser));
         } elseif (count($result['detached']) > 0) {
             $message = 'Unfollowed ' . $user->name;
         } else {

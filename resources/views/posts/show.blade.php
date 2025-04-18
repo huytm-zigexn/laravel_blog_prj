@@ -35,7 +35,6 @@
                             @endif
                             <div class="card-body">
                                 <h5 class="card-title">{{ Str::limit($related->title, 50) }}</h5>
-                                <p class="card-text text-muted">{{ Str::limit($related->content, 80) }}</p>
                                 <a href="{{ route('posts.show', $related->slug) }}" class="btn btn-outline-primary btn-sm">Đọc thêm</a>
                             </div>
                         </div>
