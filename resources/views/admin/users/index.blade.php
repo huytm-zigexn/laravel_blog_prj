@@ -4,16 +4,48 @@
 
 @section('content')
 <div class="container-fluid">
+    <form method="GET" action="{{ route('users.index') }}" class="d-flex gap-2 mb-3">
+        <select name="role" class="form-select w-auto">
+            <option value="">-- All role --</option>
+            <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
+            <option value="author" {{ request('role') === 'author' ? 'selected' : '' }}>Author</option>
+            <option value="reader" {{ request('role') === 'reader' ? 'selected' : '' }}>Reader</option>
+        </select>
+        <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Tìm tên hoặc email...">
+        <button class="btn btn-primary" type="submit">Search</button>
+    </form>
     <h3 style="font-weight: bold" class="text-center mb-4">Users Management</h3>
 
     <table class="table table-bordered table-hover align-middle">
         <thead class="table-dark">
             <tr>
                 <th>No.</th>
-                <th>Name</th>
+                <th>
+                    <a class="text-white" href="{{ route('users.index', ['name_sort' => request('name_sort') === 'asc' ? 'desc' : 'asc']) }}">
+                        Name
+                        @if(request('name_sort') === 'asc')
+                            <i class="fa fa-sort-alpha-down ms-1"></i>
+                        @elseif(request('name_sort') === 'desc')
+                            <i class="fa fa-sort-alpha-up ms-1"></i>
+                        @else
+                            <i class="fa fa-sort ms-1"></i>
+                        @endif
+                    </a>
+                </th>
                 <th>Email</th>
                 <th>Role</th>
-                <th>Joined at</th>
+                <th>
+                    <a class="text-white" href="{{ route('users.index', ['join_date_sort' => request('join_date_sort') === 'asc' ? 'desc' : 'asc']) }}">
+                        Joined at
+                        @if(request('join_date_sort') === 'asc')
+                            <i class="fa-solid fa-down-long"></i>
+                        @elseif(request('join_date_sort') === 'desc')
+                            <i class="fa-solid fa-up-long"></i>
+                        @else
+                            <i class="fa fa-sort ms-1"></i>
+                        @endif
+                    </a>
+                </th>
                 <th class="text-center">Action</th>
             </tr>
         </thead>

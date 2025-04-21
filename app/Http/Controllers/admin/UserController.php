@@ -4,15 +4,16 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminEditUserValidate;
 use App\Models\User;
+use App\QueryFilters\UserFilter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(UserFilter $filters)
     {
-        $users = User::latest()->get();
+        $users = User::filter($filters)->paginate(10);
         return view('admin.users.index', compact('users'));
     }
 
