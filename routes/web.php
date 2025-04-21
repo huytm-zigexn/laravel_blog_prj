@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\UserController as AdminUserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
@@ -35,6 +36,11 @@ Route::middleware('auth')->group(function() {
     Route::get('/notifications', [UserController::class, 'notifications'])->name('follow.noti');
     
     Route::prefix('admin')->middleware(EnsureHasRole::class.':admin')->group(function() {
+        Route::get('/dashboard', function() {
+            return view('admin.dashboard');
+        })->name('admin.dashboard');
+        Route::resource('users', AdminUserController::class)->except(['create', 'store', 'update']);
+        Route::put('users/{id}', [AdminUserController::class, 'update'])->name('users.update');
         Route::post('/img-upload', [PostController::class, 'imgUpload'])->name('admin.img.upload');
         Route::get('/posts/create', [PostController::class, 'getCreate'])->name('admin.posts.create');
         Route::post('/posts/store', [PostController::class, 'store'])->name('admin.posts.store');

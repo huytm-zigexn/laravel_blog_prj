@@ -16,3 +16,8 @@ function notReader($user)
 {
     return $user && $user->role !== 'reader';
 }
+
+function isAdmin($user)
+{
+    return $user && $user->role === 'admin';
+}

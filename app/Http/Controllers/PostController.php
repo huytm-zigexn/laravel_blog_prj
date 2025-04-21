@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AuthorsPublishPostNotify;
 use App\Events\FollowingsPublishPostNotify;
 use App\Http\Requests\ImageRequestValidate;
 use App\Http\Requests\PostRequestValidate;
@@ -10,11 +11,11 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
+use App\Notifications\AuthorsPublishPost;
 use App\Notifications\FollowingsPublishPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Intervention\Image\ImageManagerStatic as Image;
 
 class PostController extends Controller
 {
@@ -112,6 +113,17 @@ class PostController extends Controller
             {
                 $follower->notify(new FollowingsPublishPost($authUser, $post));
             }
+            $admin = User::where('role', 'admin')->with('followings')->firstOrFail();
+            if(($admin->id !== $authUser->id) && !$admin->followings->contains('id', $authUser->id))
+            {
+                event(new AuthorsPublishPostNotify([
+                    'user_id' => $authUser->id,
+                    'user_name' => $authUser->name,
+                    'user_avatar' => $authUser->avatar,
+                    'message' => 'Author <a href="' . route('user.show', $authUser->id) . '">' . $authUser->name . '</a>' . ' has published ' . '<a href="' . route('posts.show', $post->slug) . '"> a new post' . '</a>',
+                ]));
+                $admin->notify(new AuthorsPublishPost($authUser, $post));
+            }
         }
 
         return redirect()->route('user.show', Auth::id())->with('success', 'Post created successfully');
@@ -146,6 +158,18 @@ class PostController extends Controller
         foreach($authUser->followers as $follower)
         {
             $follower->notify(new FollowingsPublishPost($authUser, $post));
+        }
+
+        $admin = User::where('role', 'admin')->firstOrFail();
+        if(($admin->id !== $authUser->id) && !$admin->followings->contains('id', $authUser->id))
+        {
+            event(new AuthorsPublishPostNotify([
+                'user_id' => $authUser->id,
+                'user_name' => $authUser->name,
+                'user_avatar' => $authUser->avatar,
+                'message' => 'Author <a href="' . route('user.show', $authUser->id) . '">' . $authUser->name . '</a>' . ' has published ' . '<a href="' . route('posts.show', $post->slug) . '"> a new post' . '</a>',
+            ]));
+            $admin->notify(new AuthorsPublishPost($authUser, $post));
         }
 
         return redirect()->back()->with('success', 'Post published successfully');

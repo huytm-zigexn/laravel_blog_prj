@@ -28,13 +28,25 @@ class AppServiceProvider extends ServiceProvider
     
             if (Auth::check()) {
                 $data = Notification::where('notifiable_id', Auth::id())
-                    ->pluck('data')
-                    ->map(function ($d) {
-                        return json_decode($d, true);
-                    });
+                        ->orderBy('created_at', 'desc')
+                        ->get()
+                        ->map(function ($notification) {
+                            $decoded = json_decode($notification->data, true);
+                            $decoded['created_at'] = $notification->created_at;
+                            $decoded['id'] = $notification->id;
+                            return $decoded;
+                        });
             }
     
             $view->with('data', $data);
+
+            $roleColors = [
+                'admin' => 'danger',
+                'author' => 'success',
+                'reader' => 'secondary',
+            ];
+
+            $view->with('roleColors', $roleColors);
         });
     }
 }

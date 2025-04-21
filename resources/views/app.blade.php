@@ -107,11 +107,55 @@
                 }
             });
         </script>
+        <style>
+            .admin-sidebar {
+                width: 250px;
+                transition: all 0.3s;
+            }
+        
+            .admin-wrapper.sidebar-collapsed .admin-sidebar {
+                margin-left: -250px;
+            }
+        
+            @media (max-width: 768px) {
+                .admin-sidebar {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    height: 100vh;
+                    background: #343a40;
+                    z-index: 999;
+                    transform: translateX(-100%);
+                }
+        
+                .admin-wrapper.sidebar-open .admin-sidebar {
+                    transform: translateX(0);
+                }
+        
+                .content-wrapper {
+                    padding-left: 1rem;
+                }
+            }
+        </style>
     </head>
     <body>
         @include('partials/header')
         <!-- about section start --> 
-        @yield('content')
+        @if (Request::is('admin*'))
+            <div class="admin-wrapper d-flex">
+                <div class="admin-sidebar">
+                    @include('partials.sidebar')
+                </div>
+                <div class="content-wrapper flex-grow-1 p-4">
+                    <button class="btn btn-outline-secondary mb-3" id="toggleSidebar">
+                        ☰ Menu
+                    </button>
+                    @yield('content')
+                </div>
+            </div>
+        @else
+            @yield('content') <!-- Giao diện frontend -->
+        @endif
         
         @include('partials/footer')
         <!-- Javascript files-->
@@ -127,5 +171,21 @@
         <script src="js/owl.carousel.js"></script>
         <script src="{{ asset('js/app.js') }}"></script>
         <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const wrapper = document.querySelector('.admin-wrapper');
+                const toggleBtn = document.getElementById('toggleSidebar');
+        
+                if (toggleBtn) {
+                    toggleBtn.addEventListener('click', function () {
+                        if (window.innerWidth < 768) {
+                            wrapper.classList.toggle('sidebar-open');
+                        } else {
+                            wrapper.classList.toggle('sidebar-collapsed');
+                        }
+                    });
+                }
+            });
+        </script>
     </body>
 </html>

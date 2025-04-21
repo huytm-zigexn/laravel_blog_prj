@@ -86,6 +86,26 @@
 
         document.querySelector('#notification-container').innerHTML += html;
     });
+
+    channel.bind('authors-publish-post-noti', function(data) {
+        console.log('Received data:', data);
+
+        let avatar = data.user_avatar
+            ? `<img src="${data.user_avatar}" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">`
+            : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(data.user_name)}&background=0D8ABC&color=fff&size=40" 
+                class="rounded-circle" alt="Avatar">`;
+
+        let html = `
+            <div class="justify-content-center align-items-center d-flex">
+                ${avatar}
+                <div>
+                    <p>${data.message}</p>
+                </div>
+            </div>
+        `;
+
+        document.querySelector('#notification-container').innerHTML += html;
+    });
 </script>
 
 <div class="header_section">
@@ -106,13 +126,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('posts.index') }}">Blog</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="contact.html">Contact Us</a>
-                    </li>
                     @auth
                         <li class="nav-item">
                             <a href="{{ route('user.like', Auth::id()) }}" class="nav-link">Favorite Posts</a>
                         </li>
+                        @if (isAdmin(Auth::user()))
+                            <li class="nav-item">
+                                <a href="{{ route('admin.dashboard') }}" class="nav-link">Dashboard</a>
+                            </li>
+                        @endif
                         <li style="position: relative;" class="nav-item">
                             <a class="nav-link nav-noti" href="#"><i style="font-size: 24px; color: #fff" class="fa-solid fa-bell"></i></a>
                             <div class="noti-container" style="z-index: 999; display: none;">
@@ -135,7 +157,10 @@
                                                 @endif
                                                 
                                                 <div>
-                                                    <p>{!! Str::limit($dataItem['message'], 200) !!}</p>
+                                                    <p style="margin-bottom: 0">{!! Str::limit($dataItem['message'], 200) !!}</p>
+                                                    <p style="margin-top: 0">
+                                                        <small class="text-muted">{{ $dataItem['created_at']->diffForHumans() }}</small>
+                                                    </p>
                                                 </div>
                                             </div>
                                         @endforeach

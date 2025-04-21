@@ -146,7 +146,7 @@ class UserController extends Controller
             $message = 'Nothing changes.';
         }
         
-        return redirect()->back()->with('success', $message);
+        return redirect()->route('users.show', ['user' => $user->id])->with('success', $message);
     }
 
     public function likedPostsList()
