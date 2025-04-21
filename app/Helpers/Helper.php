@@ -21,3 +21,13 @@ function isAdmin($user)
 {
     return $user && $user->role === 'admin';
 }
+
+function queryAscDesc($key)
+{
+    $query = request()->all();
+    if($key)
+    {
+        $query[$key] = request($key) === 'asc' ? 'desc' : 'asc';
+    }
+    return $query;
+}

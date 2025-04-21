@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostRequestValidate extends FormRequest
+class AdminPostCreateValidate extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,6 +24,7 @@ class PostRequestValidate extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
+            'user_id' => 'required|exists:users,id',
             'tags' => 'nullable|exists:tags,id',
             'thumbnail' => 'required|image',
             'category_id' => 'nullable|exists:categories,id',

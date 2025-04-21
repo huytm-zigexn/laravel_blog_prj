@@ -5,21 +5,14 @@
 @section('content')
 <div class="container-fluid">
     <form method="GET" action="{{ route('users.index') }}" class="d-flex gap-2 mb-3">
-<<<<<<< HEAD
         <select name="role" class="form-select w-auto">
-=======
-        <select name="role" class="form-select w-auto" onchange="this.form.submit()">
->>>>>>> 52a1cc0 (update filter for username, created date and roles in user management page)
             <option value="">-- All role --</option>
             <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
             <option value="author" {{ request('role') === 'author' ? 'selected' : '' }}>Author</option>
             <option value="reader" {{ request('role') === 'reader' ? 'selected' : '' }}>Reader</option>
         </select>
-<<<<<<< HEAD
         <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Tìm tên hoặc email...">
         <button class="btn btn-primary" type="submit">Search</button>
-=======
->>>>>>> 52a1cc0 (update filter for username, created date and roles in user management page)
     </form>
     <h3 style="font-weight: bold" class="text-center mb-4">Users Management</h3>
 
@@ -28,7 +21,7 @@
             <tr>
                 <th>No.</th>
                 <th>
-                    <a class="text-white" href="{{ route('users.index', ['name_sort' => request('name_sort') === 'asc' ? 'desc' : 'asc']) }}">
+                    <a class="text-white" href="{{ route('users.index', queryAscDesc('name_sort')) }}">
                         Name
                         @if(request('name_sort') === 'asc')
                             <i class="fa fa-sort-alpha-down ms-1"></i>
@@ -42,7 +35,7 @@
                 <th>Email</th>
                 <th>Role</th>
                 <th>
-                    <a class="text-white" href="{{ route('users.index', ['join_date_sort' => request('join_date_sort') === 'asc' ? 'desc' : 'asc']) }}">
+                    <a class="text-white" href="{{ route('users.index', queryAscDesc('join_date_sort')) }}">
                         Joined at
                         @if(request('join_date_sort') === 'asc')
                             <i class="fa-solid fa-down-long"></i>
@@ -88,5 +81,6 @@
             @endforeach
         </tbody>
     </table>
+    {{ $users->withQueryString()->links('pagination::bootstrap-5') }}
 </div>
 @endsection

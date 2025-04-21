@@ -42,12 +42,12 @@
         <script src="https://cdn.tiny.cloud/1/{{ env('TINYMCE_API_KEY') }}/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
         <script>
             tinymce.init({
-                selector: 'textarea#myeditorinstance', // Replace this CSS selector to match the placeholder element for TinyMCE
+                selector: 'textarea.myeditorinstance', // Replace this CSS selector to match the placeholder element for TinyMCE
                 plugins: 'code table lists image',
                 toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | indent outdent | bullist numlist | code | table | image',
                 file_picker_types: 'image',
                 placeholder: 'Type content here...',
-                images_upload_url: '{{ route('admin.img.upload') }}',
+                images_upload_url: '{{ route('img.upload') }}',
                 images_upload_credentials: true,
                 images_upload_headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -60,7 +60,7 @@
                     return new Promise((resolve, reject) => {
                         const xhr = new XMLHttpRequest();
                         xhr.withCredentials = true;
-                        xhr.open('POST', '{{ route('admin.img.upload') }}');
+                        xhr.open('POST', '{{ route('img.upload') }}');
 
                         xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
                         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -154,7 +154,7 @@
                 </div>
             </div>
         @else
-            @yield('content') <!-- Giao diện frontend -->
+            @yield('content')
         @endif
         
         @include('partials/footer')

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\PostController as AdminPostController;
 use App\Http\Controllers\admin\UserController as AdminUserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
@@ -19,7 +20,7 @@ Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 Route::get('/', [PostController::class, 'mostViewsPosts'])->name('app');
 
-Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+Route::get('/posts', [PostController::class, 'index'])->name('user.posts.index');
 
 
 Route::post('/posts/{slug}/comments', [CommentController::class, 'store'])->name('comments.store');
@@ -41,17 +42,19 @@ Route::middleware('auth')->group(function() {
         })->name('admin.dashboard');
         Route::resource('users', AdminUserController::class)->except(['create', 'store', 'update']);
         Route::put('users/{id}', [AdminUserController::class, 'update'])->name('users.update');
-        Route::post('/img-upload', [PostController::class, 'imgUpload'])->name('admin.img.upload');
-        Route::get('/posts/create', [PostController::class, 'getCreate'])->name('admin.posts.create');
-        Route::post('/posts/store', [PostController::class, 'store'])->name('admin.posts.store');
-        Route::put('/posts/{slug}/publish', [PostController::class, 'publish'])->name('admin.posts.publish');
-        Route::get('/posts/{slug}/edit', [PostController::class, 'edit'])->name('admin.posts.edit');
-        Route::put('/posts/{slug}/update', [PostController::class, 'update'])->name('admin.posts.update');
-        Route::delete('/posts/{slug}/delete', [PostController::class, 'delete'])->name('admin.posts.delete');
+
+        Route::get('/posts-management', [AdminPostController::class, 'index'])->name('admin.posts.index');
+        Route::get('/posts-management/create', [AdminPostController::class, 'getCreate'])->name('admin.posts.create');
+        Route::post('/posts-management/store', [AdminPostController::class, 'store'])->name('admin.posts.store');
+        Route::get('/posts-management/{slug}', [AdminPostController::class, 'show'])->name('admin.posts.show');
+        Route::get('/posts-management/{slug}/edit', [AdminPostController::class, 'edit'])->name('admin.posts.edit');
+        Route::put('/posts-management/{slug}/update', [AdminPostController::class, 'update'])->name('admin.posts.update');
+        Route::delete('/posts-management/{slug}/delete', [AdminPostController::class, 'delete'])->name('admin.posts.delete');
+        Route::put('/posts-management/{slug}/publish', [PostController::class, 'publish'])->name('admin.posts.publish');
     });
+    Route::post('/img-upload', [PostController::class, 'imgUpload'])->name('img.upload');
     
     Route::prefix('author')->middleware(EnsureHasRole::class.':author')->group(function() {
-        Route::post('/img-upload', [PostController::class, 'imgUpload'])->name('author.img.upload');
         Route::get('/posts/create', [PostController::class, 'getCreate'])->name('author.posts.create');
         Route::post('/posts/store', [PostController::class, 'store'])->name('author.posts.store');
         Route::put('/posts/{slug}/publish', [PostController::class, 'publish'])->name('author.posts.publish');

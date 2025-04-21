@@ -124,7 +124,7 @@
                         <a class="nav-link" href="about.html">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('posts.index') }}">Blog</a>
+                        <a class="nav-link" href="{{ route('user.posts.index') }}">Blog</a>
                     </li>
                     @auth
                         <li class="nav-item">

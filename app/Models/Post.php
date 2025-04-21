@@ -5,10 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Kblais\QueryFilter\Filterable;
 
 class Post extends Model
 {
     use HasFactory;
+    use Filterable;
+
+    protected $casts = [
+        'published_at' => 'datetime',
+    ];
 
     protected $fillable = [
         'title',

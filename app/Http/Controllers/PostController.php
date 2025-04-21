@@ -22,8 +22,8 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $query = Post::where('status', 'published')
-                     ->orderBy('published_at', 'desc');
-        
+            ->orderBy('published_at', 'desc');
+
         // Filter by category
         if ($request->has('category') && !empty($request->category)) {
             $categorySlug = $request->category;
@@ -31,7 +31,7 @@ class PostController extends Controller
                 $q->where('slug', $categorySlug);
             });
         }
-        
+
         // Kết hợp nhiều tag (AND logic)
         if ($request->has('tags') && !empty($request->tags)) {
             $tagSlugs = $request->tags;
@@ -50,14 +50,14 @@ class PostController extends Controller
     public function mostViewsPosts()
     {
         $posts = Post::where('status', 'published')
-             ->withCount('viewedByUsers')
-             ->orderByDesc('viewed_by_users_count')
-             ->take(5)
-             ->get();
-        return view('homepage', compact('posts')); 
+            ->withCount('viewedByUsers')
+            ->orderByDesc('viewed_by_users_count')
+            ->take(5)
+            ->get();
+        return view('homepage', compact('posts'));
     }
 
-    
+
     public function show(string $slug)
     {
         $post = Post::where('slug', $slug)->firstOrFail();
@@ -68,13 +68,14 @@ class PostController extends Controller
     public function getCreate()
     {
         $categories = Category::orderBy('name')->get();
-        return view('posts.create', compact('categories'));
+        $tags = Tag::orderBy('name')->get();
+        return view('posts.create', compact('categories', 'tags'));
     }
 
     public function store(PostRequestValidate $request)
     {
         $thumbnailPath = null;
-        
+
         if ($request->hasFile('thumbnail')) {
             $thumbnailPath = 'storage/' . $request->file('thumbnail')->store('thumbnails', 'public');
         }
@@ -82,17 +83,17 @@ class PostController extends Controller
         $originalSlug = $slug;
         $counter = 1;
 
-        while(Post::where('slug', $slug)->exists())
-        {
+        while (Post::where('slug', $slug)->exists()) {
             $slug = $originalSlug . '-' . $counter++;
         }
 
         $status = $request->status === 'Publish' ? 'published' : 'draft';
+        $content = str_replace('../../storage', asset('storage'), $request->content);
 
         $post = Post::create([
             'title' => $request->title,
             'slug' => $slug,
-            'content' => $request->content,
+            'content' => $content,
             'thumbnail' => $thumbnailPath,
             'category_id' => $request->category_id,
             'status' => $status,
@@ -100,8 +101,9 @@ class PostController extends Controller
             'user_id' => Auth::id()
         ]);
 
-        if($status === 'published')
-        {
+        $post->tags()->sync($request->tags);
+
+        if ($status === 'published') {
             $authUser = User::findOrFail(Auth::id());
             event(new FollowingsPublishPostNotify([
                 'user_id' => $authUser->id,
@@ -109,13 +111,11 @@ class PostController extends Controller
                 'user_avatar' => $authUser->avatar,
                 'message' => '<a href="' . route('user.show', $authUser->id) . '">' . $authUser->name . '</a>' . ' has published ' . '<a href="' . route('posts.show', $post->slug) . '"> a new post' . '</a>',
             ]));
-            foreach($authUser->followers as $follower)
-            {
+            foreach ($authUser->followers as $follower) {
                 $follower->notify(new FollowingsPublishPost($authUser, $post));
             }
             $admin = User::where('role', 'admin')->with('followings')->firstOrFail();
-            if(($admin->id !== $authUser->id) && !$admin->followings->contains('id', $authUser->id))
-            {
+            if (($admin->id !== $authUser->id) && !$admin->followings->contains('id', $authUser->id)) {
                 event(new AuthorsPublishPostNotify([
                     'user_id' => $authUser->id,
                     'user_name' => $authUser->name,
@@ -129,17 +129,17 @@ class PostController extends Controller
         return redirect()->route('user.show', Auth::id())->with('success', 'Post created successfully');
     }
 
-    public function imgUpload (ImageRequestValidate $request)
+    public function imgUpload(ImageRequestValidate $request)
     {
         $thumbnailPath = null;
-        
+
         if ($request->hasFile('file')) {
             $thumbnailPath = $request->file('file')->store('thumbnails', 'public');
             return response()->json([
                 'location' => asset('storage/' . $thumbnailPath)
             ]);
         }
-        
+
         return response()->json(['error' => 'No file uploaded'], 400);
     }
 
@@ -155,14 +155,12 @@ class PostController extends Controller
             'user_avatar' => $authUser->avatar,
             'message' => '<a href="' . route('user.show', $authUser->id) . '">' . $authUser->name . '</a>' . ' has published ' . '<a href="' . route('posts.show', $post->slug) . '"> a new post' . '</a>',
         ]));
-        foreach($authUser->followers as $follower)
-        {
+        foreach ($authUser->followers as $follower) {
             $follower->notify(new FollowingsPublishPost($authUser, $post));
         }
 
         $admin = User::where('role', 'admin')->firstOrFail();
-        if(($admin->id !== $authUser->id) && !$admin->followings->contains('id', $authUser->id))
-        {
+        if (($admin->id !== $authUser->id) && !$admin->followings->contains('id', $authUser->id)) {
             event(new AuthorsPublishPostNotify([
                 'user_id' => $authUser->id,
                 'user_name' => $authUser->name,
@@ -178,26 +176,25 @@ class PostController extends Controller
     public function edit(string $slug)
     {
         $post = Post::where('slug', $slug)->firstOrFail();
+        $tags = Tag::whereHas('posts')->orderBy('name')->get();
         $categories = Category::orderBy('name')->get();
-        return view('posts.update', compact('categories', 'post'));
+        return view('posts.update', compact('categories', 'post', 'tags'));
     }
 
     public function update(PostUpdateRequestValidate $request, string $slug)
-    {   
+    {
         $post = Post::where('slug', $slug)->firstOrFail();
         if ($request->hasFile('thumbnail')) {
             $thumbnailPath = 'storage/' . $request->file('thumbnail')->store('thumbnails', 'public');
             $post->thumbnail = $thumbnailPath;
         }
 
-        if($request->title !== $post->title)
-        {
+        if ($request->title !== $post->title) {
             $slug = Str::slug($request->title);
             $originalSlug = $slug;
             $counter = 1;
-    
-            while(Post::where('slug', $slug)->exists())
-            {
+
+            while (Post::where('slug', $slug)->exists()) {
                 $slug = $originalSlug . '-' . $counter++;
             }
 
@@ -207,28 +204,28 @@ class PostController extends Controller
         $post->title = $request->title;
         $post->content = $request->content;
         $post->category_id = $request->category_id;
-        
+
         $post->save();
 
-        return redirect()->route('posts.index')->with('success', 'Post created successfully');
+        return redirect()->route('user.show', Auth::id())->with('success', 'Post created successfully');
     }
 
     public function delete(string $slug)
     {
         $post = Post::where('slug', $slug)->firstOrFail();
         $post->delete();
-        return redirect()->back()->with('success', 'Task deleted successfully!');
+        return redirect()->back()->with('success', 'Post deleted successfully!');
     }
-    
+
     private static function relatedPosts($post)
     {
         $relatedPosts = Post::where('status', 'published')
-                    ->where('category_id', $post->category_id)
-                    ->where('id', '!=', $post->id)
-                    ->withCount('viewedByUsers')
-                    ->orderByDesc('viewed_by_users_count')
-                    ->take(5)
-                    ->get();
+            ->where('category_id', $post->category_id)
+            ->where('id', '!=', $post->id)
+            ->withCount('viewedByUsers')
+            ->orderByDesc('viewed_by_users_count')
+            ->take(5)
+            ->get();
         return $relatedPosts;
     }
 }

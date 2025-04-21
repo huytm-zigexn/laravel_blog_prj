@@ -4,6 +4,7 @@
 
 @section('content')
     <div class="container">
+        @include('partials.arrowBack')
         <div class="row">
             <div class="col-md-12">
                 <div class="card" style="margin: 50px 0">
@@ -37,8 +38,18 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <label for="tags[]">Tag</label>
+                                <select name="tags[]" class="form-select" multiple>
+                                    @foreach ($tags as $tag)
+                                        <option value="{{ $tag->id }}" {{ $post->tags->contains($tag->id) ? 'selected' : '' }}>
+                                            {{ $tag->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="content">Content</label>
-                                <textarea name="content" id="myeditorinstance">{!! old('content', $post->content) !!}</textarea>
+                                <textarea name="content" class="myeditorinstance">{!! old('content', $post->content) !!}</textarea>
                             </div>
                             <div class="form-group">
                                 <label for="thumbnail">Thumbnail</label><br>
