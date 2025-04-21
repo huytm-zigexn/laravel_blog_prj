@@ -5,14 +5,21 @@
 @section('content')
 <div class="container-fluid">
     <form method="GET" action="{{ route('users.index') }}" class="d-flex gap-2 mb-3">
+<<<<<<< HEAD
         <select name="role" class="form-select w-auto">
+=======
+        <select name="role" class="form-select w-auto" onchange="this.form.submit()">
+>>>>>>> 52a1cc0 (update filter for username, created date and roles in user management page)
             <option value="">-- All role --</option>
             <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
             <option value="author" {{ request('role') === 'author' ? 'selected' : '' }}>Author</option>
             <option value="reader" {{ request('role') === 'reader' ? 'selected' : '' }}>Reader</option>
         </select>
+<<<<<<< HEAD
         <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Tìm tên hoặc email...">
         <button class="btn btn-primary" type="submit">Search</button>
+=======
+>>>>>>> 52a1cc0 (update filter for username, created date and roles in user management page)
     </form>
     <h3 style="font-weight: bold" class="text-center mb-4">Users Management</h3>
 
