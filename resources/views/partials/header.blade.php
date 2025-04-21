@@ -66,6 +66,26 @@
 
         document.querySelector('#notification-container').innerHTML += html;
     });
+
+    channel.bind('followings-publish-post-noti', function(data) {
+        console.log('Received data:', data);
+
+        let avatar = data.user_avatar
+            ? `<img src="${data.user_avatar}" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">`
+            : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(data.user_name)}&background=0D8ABC&color=fff&size=40" 
+                class="rounded-circle" alt="Avatar">`;
+
+        let html = `
+            <div class="justify-content-center align-items-center d-flex">
+                ${avatar}
+                <div>
+                    <p>${data.message}</p>
+                </div>
+            </div>
+        `;
+
+        document.querySelector('#notification-container').innerHTML += html;
+    });
 </script>
 
 <div class="header_section">
@@ -101,7 +121,7 @@
                                     <h2 class="text-center">Notifications</h2>
                                     <div class="noti" style="max-height: 300px; overflow-y: auto;">
                                         @foreach ($data as $dataItem)
-                                            <div style="background-color: aliceblue; padding: 0 10px" id="notification-container"></div>
+                                            <div style="background-color: aliceblue;" id="notification-container"></div>
                                             <div class="justify-content-center align-items-center d-flex">
                                                 @if($dataItem['user_avatar'])
                                                     <a href="{{ route('user.show', $dataItem['user_id']) }}">
@@ -115,7 +135,7 @@
                                                 @endif
                                                 
                                                 <div>
-                                                    <p>{!! $dataItem['message'] !!}</p>
+                                                    <p>{!! Str::limit($dataItem['message'], 200) !!}</p>
                                                 </div>
                                             </div>
                                         @endforeach

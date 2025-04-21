@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\FollowingsPublishPostNotify;
 use App\Http\Requests\ImageRequestValidate;
 use App\Http\Requests\PostRequestValidate;
 use App\Http\Requests\PostUpdateRequestValidate;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Models\User;
+use App\Notifications\FollowingsPublishPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -96,6 +99,21 @@ class PostController extends Controller
             'user_id' => Auth::id()
         ]);
 
+        if($status === 'published')
+        {
+            $authUser = User::findOrFail(Auth::id());
+            event(new FollowingsPublishPostNotify([
+                'user_id' => $authUser->id,
+                'user_name' => $authUser->name,
+                'user_avatar' => $authUser->avatar,
+                'message' => '<a href="' . route('user.show', $authUser->id) . '">' . $authUser->name . '</a>' . ' has published ' . '<a href="' . route('posts.show', $post->slug) . '"> a new post' . '</a>',
+            ]));
+            foreach($authUser->followers as $follower)
+            {
+                $follower->notify(new FollowingsPublishPost($authUser, $post));
+            }
+        }
+
         return redirect()->route('user.show', Auth::id())->with('success', 'Post created successfully');
     }
 
@@ -118,6 +136,17 @@ class PostController extends Controller
         $post = Post::where('slug', $slug)->firstOrFail();
         $post->status = 'published';
         $post->save();
+        $authUser = User::findOrFail(Auth::id());
+        event(new FollowingsPublishPostNotify([
+            'user_id' => $authUser->id,
+            'user_name' => $authUser->name,
+            'user_avatar' => $authUser->avatar,
+            'message' => '<a href="' . route('user.show', $authUser->id) . '">' . $authUser->name . '</a>' . ' has published ' . '<a href="' . route('posts.show', $post->slug) . '"> a new post' . '</a>',
+        ]));
+        foreach($authUser->followers as $follower)
+        {
+            $follower->notify(new FollowingsPublishPost($authUser, $post));
+        }
 
         return redirect()->back()->with('success', 'Post published successfully');
     }

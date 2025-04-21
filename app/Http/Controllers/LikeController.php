@@ -18,7 +18,7 @@ class LikeController extends Controller
         $user = User::where('id', $post->user_id)->firstOrFail();
         $authUser = Auth::user();
         $result = $authUser->likedPosts()->toggle($post->id);
-        if (count($result['attached']) > 0) {
+        if (count($result['attached']) > 0 && $user->id !== Auth::id()) {
             $message = 'Liked ' . $post->title;
             event(new LikedPostNotify([
                 'user_id' => $authUser->id,
@@ -27,7 +27,7 @@ class LikeController extends Controller
                 'message' => '<a href="' . route('user.show', $authUser->id) . '">' . $authUser->name . '</a>' . ' has liked your ' . '<a href="' . route('posts.show', $post->slug) . '">' . $post->title . '</a>' . '!',
             ]));
             $user->notify(new UserLikedPost($authUser, $post));
-        } elseif (count($result['detached']) > 0) {
+        } elseif (count($result['detached']) > 0 && $user->id !== Auth::id()) {
             $message = 'Unliked ' . $post->title;
         } else {
             $message = 'Nothing changes.';

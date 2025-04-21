@@ -5,9 +5,8 @@ namespace App\Notifications;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Str;
 use Illuminate\Notifications\Messages\BroadcastMessage;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class UserCommentedPost extends Notification
@@ -42,7 +41,7 @@ class UserCommentedPost extends Notification
             'user_id' => $this->user->id,
             'user_name' => $this->user->name,
             'user_avatar' => $this->user->avatar,
-            'message' => '<a href="' . route('user.show', $this->user->id) . '">' . $this->user->name . '</a>' . ' has commented ' . '<a href="' . route('posts.show', $this->post->slug) . '">' . $this->post->title . '</a>',
+            'message' => Str::limit('<a href="' . route('user.show', $this->user->id) . '">' . $this->user->name . '</a>' . ' has commented ' . '<a href="' . route('posts.show', $this->post->slug) . '">' . $this->post->title . '</a>', 200),
         ];
     }
     
@@ -52,7 +51,7 @@ class UserCommentedPost extends Notification
             'user_id' => $this->user->id,
             'user_name' => $this->user->name,
             'user_avatar' => $this->user->avatar,
-            'message' => '<a href="' . route('user.show', $this->user->id) . '">' . $this->user->name . '</a>' . ' has commented ' . '<a href="' . route('posts.show', $this->post->slug) . '">' . $this->post->title . '</a>',
+            'message' => Str::limit('<a href="' . route('user.show', $this->user->id) . '">' . $this->user->name . '</a>' . ' has commented ' . '<a href="' . route('posts.show', $this->post->slug) . '">' . $this->post->title . '</a>', 200),
         ]);
     }
 }

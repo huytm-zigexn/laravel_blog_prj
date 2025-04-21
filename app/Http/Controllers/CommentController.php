@@ -23,15 +23,18 @@ class CommentController extends Controller
             'post_id' => $post->id,
             'user_id' => Auth::id(),
             'content' => $request->content,
-            'is_allowed' => 0
+            'is_allowed' => Auth::id() === $admin->id ? 1 : 0
         ]);
-        event(new CommentedPostNotify([
-            'user_id' => $authUser->id,
-            'user_name' => $authUser->name,
-            'user_avatar' => $authUser->avatar,
-            'message' => '<a href="' . route('user.show', $authUser->id) . '">' . $authUser->name . '</a>' . ' has commented ' . $user->name . "'s " . '<a href="' . route('posts.show', $post->slug) . '">' . $post->title . '</a>',
-        ]));
-        $admin->notify(new UserCommentedPost($authUser, $post));
+        if(Auth::id() !== $admin->id)
+        {
+            event(new CommentedPostNotify([
+                'user_id' => $authUser->id,
+                'user_name' => $authUser->name,
+                'user_avatar' => $authUser->avatar,
+                'message' => '<a href="' . route('user.show', $authUser->id) . '">' . $authUser->name . '</a>' . ' has commented ' . $user->name . "'s " . '<a href="' . route('posts.show', $post->slug) . '">' . $post->title . '</a>',
+            ]));
+            $admin->notify(new UserCommentedPost($authUser, $post));
+        }
 
         return redirect()->route('posts.show', $slug)->with('success', 'Commented successfully!');
     }

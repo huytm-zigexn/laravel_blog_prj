@@ -4,14 +4,15 @@ namespace App\Notifications;
 
 use App\Models\Post;
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Str;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 
-class UserLikedPost extends Notification
+class FollowingsPublishPost extends Notification
 {
     use Queueable;
+
     protected $user;
     protected $post;
     
@@ -40,7 +41,7 @@ class UserLikedPost extends Notification
             'user_id' => $this->user->id,
             'user_name' => $this->user->name,
             'user_avatar' => $this->user->avatar,
-            'message' => Str::limit('<a href="' . route('user.show', $this->user->id) . '">' . $this->user->name . '</a>' . ' has liked your ' . '<a href="' . route('posts.show', $this->post->slug) . '">' . $this->post->title . '</a>' . '!', 200),
+            'message' => Str::limit('<a href="' . route('user.show', $this->user->id) . '">' . $this->user->name . '</a>' . ' has published ' . '<a href="' . route('posts.show', $this->post->slug) . '"> a new post' . '</a>', 200),
         ];
     }
     
@@ -50,7 +51,7 @@ class UserLikedPost extends Notification
             'user_id' => $this->user->id,
             'user_name' => $this->user->name,
             'user_avatar' => $this->user->avatar,
-            'message' => Str::limit('<a href="' . route('user.show', $this->user->id) . '">' . $this->user->name . '</a>' . ' has liked your ' . '<a href="' . route('posts.show', $this->post->slug) . '">' . $this->post->title . '</a>' . '!', 200),
+            'message' => Str::limit('<a href="' . route('user.show', $this->user->id) . '">' . $this->user->name . '</a>' . ' has published ' . '<a href="' . route('posts.show', $this->post->slug) . '"> a new post' . '</a>', 200),
         ]);
     }
 }
