@@ -9,7 +9,7 @@
             <div class="filter-sidebar">
                 <h2>Bộ lọc</h2>
                 
-                <form action="{{ route('posts.index') }}" method="GET" id="filter-form">
+                <form action="{{ route('user.posts.index') }}" method="GET" id="filter-form">
                     <!-- Category Filter -->
                     <div class="d-flex justify-content-center">
                         <div class="filter-section" style="margin: 0 20px">
@@ -46,7 +46,7 @@
                     </div>
                     <div class="filter-actions">
                         <button type="submit" class="btn btn-primary">Áp dụng</button>
-                        <a href="{{ route('posts.index') }}" class="btn btn-outline-secondary">Xóa bộ lọc</a>
+                        <a href="{{ route('user.posts.index') }}" class="btn btn-outline-secondary">Xóa bộ lọc</a>
                     </div>
                 </form>
             </div>
