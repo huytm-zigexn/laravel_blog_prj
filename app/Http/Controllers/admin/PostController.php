@@ -12,7 +12,6 @@ use App\Models\Tag;
 use App\Models\User;
 use App\Notifications\AuthorsPublishPost;
 use App\Notifications\FollowingsPublishPost;
-use Illuminate\Support\Str;
 use App\QueryFilters\PostFilter;
 
 class PostController extends Controller

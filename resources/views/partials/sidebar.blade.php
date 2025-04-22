@@ -19,7 +19,7 @@
             <a href="{{ route('tags.index') }}" class="nav-link text-white {{ request()->routeIs('tags.index', 'tags.edit', 'tags.create') ? 'fw-bold' : '' }}"><i class="bi bi-tags"></i> Tag Management</a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link text-white {{ request()->routeIs('admin.dashboard') ? 'fw-bold' : '' }}"><i class="bi bi-chat-dots"></i> Comment Management</a>
+            <a href="{{ route('admin.comments.index') }}" class="nav-link text-white {{ request()->routeIs('admin.comments.index') ? 'fw-bold' : '' }}"><i class="bi bi-chat-dots"></i> Comment Management</a>
         </li>
         <li class="nav-item">
             <a href="#" class="nav-link text-white {{ request()->routeIs('admin.dashboard') ? 'fw-bold' : '' }}"><i class="bi bi-bar-chart"></i> Statistics</a>

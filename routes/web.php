@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\admin\CategoryController;
+use App\Http\Controllers\admin\CommentController as AdminCommentController;
 use App\Http\Controllers\admin\PostController as AdminPostController;
 use App\Http\Controllers\admin\TagController;
 use App\Http\Controllers\admin\UserController as AdminUserController;
@@ -62,6 +63,9 @@ Route::middleware('auth')->group(function() {
         Route::get('tags/{slug}/edit', [TagController::class, 'edit'])->name('tags.edit');
         Route::put('tags/{slug}/update', [TagController::class, 'update'])->name('tags.update');
 
+        Route::get('/comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
+        Route::put('/comments/{id}/approve', [AdminCommentController::class, 'approve'])->name('admin.comments.approve');
+        Route::delete('/comments/{id}', [AdminCommentController::class, 'destroy'])->name('admin.comments.destroy');
     });
     Route::post('/img-upload', [PostController::class, 'imgUpload'])->name('img.upload');
     
