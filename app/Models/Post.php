@@ -35,15 +35,32 @@ class Post extends Model
     protected static function booted()
     {
         static::creating(function ($post) {
-            $post->slug = Str::slug($post->title);
-
-            // Kiểm tra slug trùng lặp
-            $original = $post->slug;
-            $count = 1;
-            while (Post::where('slug', $post->slug)->exists()) {
-                $post->slug = $original . '-' . $count++;
+            $post->slug = static::generateUniqueSlug($post->title);
+        });
+    
+        // Tạo slug khi cập nhật title (chỉ khi title bị đổi)
+        static::updating(function ($post) {
+            if ($post->isDirty('title')) {
+                $post->slug = static::generateUniqueSlug($post->title, $post->id);
             }
         });
+    }
+
+    protected static function generateUniqueSlug($title, $ignoreId = null)
+    {
+        $slug = Str::slug($title);
+        $original = $slug;
+        $count = 1;
+
+        while (
+            Post::where('slug', $slug)
+                ->when($ignoreId, fn($query) => $query->where('id', '!=', $ignoreId))
+                ->exists()
+        ) {
+            $slug = $original . '-' . $count++;
+        }
+
+        return $slug;
     }
 
     public function tags()

@@ -53,21 +53,12 @@ class PostController extends Controller
         if ($request->hasFile('thumbnail')) {
             $thumbnailPath = 'storage/' . $request->file('thumbnail')->store('thumbnails', 'public');
         }
-        $slug = Str::slug($request->title);
-        $originalSlug = $slug;
-        $counter = 1;
-
-        while(Post::where('slug', $slug)->exists())
-        {
-            $slug = $originalSlug . '-' . $counter++;
-        }
 
         $status = $request->status === 'Publish' ? 'published' : 'draft';
         $content = str_replace('../../storage', asset('storage'), $request->content);
 
         $post = Post::create([
             'title' => $request->title,
-            'slug' => $slug,
             'content' => $content,
             'thumbnail' => asset($thumbnailPath),
             'category_id' => $request->category_id,
@@ -124,20 +115,6 @@ class PostController extends Controller
         if ($request->hasFile('thumbnail')) {
             $thumbnailPath = 'storage/' . $request->file('thumbnail')->store('thumbnails', 'public');
             $post->thumbnail = $thumbnailPath;
-        }
-
-        if($request->title !== $post->title)
-        {
-            $slug = Str::slug($request->title);
-            $originalSlug = $slug;
-            $counter = 1;
-    
-            while(Post::where('slug', $slug)->exists())
-            {
-                $slug = $originalSlug . '-' . $counter++;
-            }
-
-            $post->slug = $slug;
         }
 
         $post->title = $request->title;

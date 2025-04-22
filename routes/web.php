@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\CategoryController;
 use App\Http\Controllers\admin\PostController as AdminPostController;
 use App\Http\Controllers\admin\UserController as AdminUserController;
 use App\Http\Controllers\CommentController;
@@ -51,6 +52,11 @@ Route::middleware('auth')->group(function() {
         Route::put('/posts-management/{slug}/update', [AdminPostController::class, 'update'])->name('admin.posts.update');
         Route::delete('/posts-management/{slug}/delete', [AdminPostController::class, 'delete'])->name('admin.posts.delete');
         Route::put('/posts-management/{slug}/publish', [PostController::class, 'publish'])->name('admin.posts.publish');
+
+        Route::resource('categories', CategoryController::class)->except('show', 'edit', 'update');
+        Route::get('categories/{slug}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+        Route::put('categories/{slug}/update', [CategoryController::class, 'update'])->name('categories.update');
+
     });
     Route::post('/img-upload', [PostController::class, 'imgUpload'])->name('img.upload');
     
