@@ -1,31 +1,31 @@
 @extends('app')
 
-@section('title', 'Category Management')
+@section('title', 'Tag Management')
 
 @section('content')
 <div class="container mt-4">
-    <h4 class="text-center mb-4 fw-bold">Category Management</h4>
+    <h4 class="text-center mb-4 fw-bold">Tag Management</h4>
     
-    <form method="GET" action="{{ route('categories.index') }}" class="d-flex gap-2 mb-3">
+    <form method="GET" action="{{ route('tags.index') }}" class="d-flex gap-2 mb-3">
         <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Search name...">
         <button class="btn btn-primary" type="submit">Search</button>
     </form>
 
-    {{-- Add New Category Button --}}
+    {{-- Add New Tag Button --}}
     <div class="mb-3 text-end">
-        <a href="{{ route('categories.create') }}" class="btn btn-success">
-            <i class="bi bi-plus-circle"></i> Add New Category
+        <a href="{{ route('tags.create') }}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Add New tag
         </a>
     </div>
 
-    {{-- Category Table --}}
+    {{-- Tag Table --}}
     <div class="table-responsive">
         <table class="table table-bordered align-middle">
             <thead class="table-light">
                 <tr>
                     <th>No.</th>
                     <th>
-                        <a href="{{ route('categories.index', queryAscDesc('name_sort')) }}">
+                        <a href="{{ route('tags.index', queryAscDesc('name_sort')) }}">
                             Name
                             @if(request('name_sort') === 'asc')
                                 <i class="fa fa-sort-alpha-down ms-1"></i>
@@ -38,7 +38,7 @@
                     </th>
                     <th>Description</th>
                     <th>
-                        <a href="{{ route('categories.index', queryAscDesc('created_at_sort')) }}">
+                        <a href="{{ route('tags.index', queryAscDesc('created_at_sort')) }}">
                             Created At
                             @if(request('created_at_sort') === 'asc')
                                 <i class="fa-solid fa-down-long"></i>
@@ -53,18 +53,18 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($categories as $index => $category)
+                @foreach ($tags as $index => $tag)
                     <tr>
-                        <td>{{ $categories->firstItem() + $loop->index }}</td>
-                        <td>{{ $category->name }}</td>
-                        <td>{{ $category->description ?? 'N/A' }}</td>
-                        <td>{{ $category->created_at->format('d/m/Y') }}</td>
+                        <td>{{ $tags->firstItem() + $loop->index }}</td>
+                        <td>{{ $tag->name }}</td>
+                        <td>{{ $tag->description ?? 'N/A' }}</td>
+                        <td>{{ $tag->created_at->format('d/m/Y') }}</td>
                         <td class="text-center">
-                            <a href="{{ route('categories.edit', $category->slug) }}" class="btn btn-sm btn-primary">
+                            <a href="{{ route('tags.edit', $tag->slug) }}" class="btn btn-sm btn-primary">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <form action="{{ route('categories.destroy', $category->slug) }}" method="POST" class="d-inline-block"
-                                  onsubmit="return confirm('Are you sure you want to delete this category?')">
+                            <form action="{{ route('tags.destroy', $tag->slug) }}" method="POST" class="d-inline-block"
+                                  onsubmit="return confirm('Are you sure you want to delete this tag?')">
                                 @csrf
                                 @method('DELETE')
                                 <button class="btn btn-sm btn-danger">
@@ -78,6 +78,6 @@
         </table>
     </div>
 
-    {{ $categories->withQueryString()->links('pagination::bootstrap-5') }}
+    {{ $tags->withQueryString()->links('pagination::bootstrap-5') }}
 </div>
 @endsection

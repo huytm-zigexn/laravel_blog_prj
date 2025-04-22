@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\admin\CategoryController;
 use App\Http\Controllers\admin\PostController as AdminPostController;
+use App\Http\Controllers\admin\TagController;
 use App\Http\Controllers\admin\UserController as AdminUserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
@@ -56,6 +57,10 @@ Route::middleware('auth')->group(function() {
         Route::resource('categories', CategoryController::class)->except('show', 'edit', 'update');
         Route::get('categories/{slug}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
         Route::put('categories/{slug}/update', [CategoryController::class, 'update'])->name('categories.update');
+
+        Route::resource('tags', TagController::class)->except('show', 'edit', 'update');
+        Route::get('tags/{slug}/edit', [TagController::class, 'edit'])->name('tags.edit');
+        Route::put('tags/{slug}/update', [TagController::class, 'update'])->name('tags.update');
 
     });
     Route::post('/img-upload', [PostController::class, 'imgUpload'])->name('img.upload');

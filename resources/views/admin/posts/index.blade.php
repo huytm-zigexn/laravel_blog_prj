@@ -98,7 +98,7 @@
             <tbody>
                 @foreach ($posts as $index => $post)
                     <tr>
-                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $posts->firstItem() + $loop->index }}</td>
                         <td class="w-25">{{ $post->title }}</td>
                         <td>
                             <span class="badge bg-{{ $post->status === 'published' ? 'success' : 'secondary' }}">

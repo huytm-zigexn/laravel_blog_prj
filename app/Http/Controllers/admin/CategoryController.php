@@ -3,13 +3,8 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminCategoryValidate;
-use Illuminate\Support\Str;
-use App\Http\Requests\AdminEditUserValidate;
 use App\Models\Category;
-use App\Models\User;
 use App\QueryFilters\CategoryFilter;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class CategoryController extends Controller
 {
@@ -40,8 +35,9 @@ class CategoryController extends Controller
         return view('admin.categories.edit', compact('category'));
     }
 
-    public function update(AdminCategoryValidate $request, Category $category)
+    public function update(AdminCategoryValidate $request, $slug)
     {
+        $category = Category::where('slug', $slug)->firstOrFail();
         $category->name = $request->name;
         $category->description = $request->description;
 

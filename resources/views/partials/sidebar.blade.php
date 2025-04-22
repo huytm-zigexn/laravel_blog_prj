@@ -13,10 +13,10 @@
             <a href="{{ route('admin.posts.index') }}" class="nav-link text-white {{ request()->routeIs('admin.posts.index', 'admin.posts.create', 'admin.posts.edit', 'admin.posts.show') ? 'fw-bold' : '' }}"><i class="bi bi-file-earmark-text"></i> Post Management</a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('categories.index') }}" class="nav-link text-white {{ request()->routeIs('categories.index') ? 'fw-bold' : '' }}"><i class="bi bi-folder"></i> Category Management</a>
+            <a href="{{ route('categories.index') }}" class="nav-link text-white {{ request()->routeIs('categories.index', 'categories.edit', 'categories.create') ? 'fw-bold' : '' }}"><i class="bi bi-folder"></i> Category Management</a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link text-white {{ request()->routeIs('admin.dashboard') ? 'fw-bold' : '' }}"><i class="bi bi-tags"></i> Tag Management</a>
+            <a href="{{ route('tags.index') }}" class="nav-link text-white {{ request()->routeIs('tags.index', 'tags.edit', 'tags.create') ? 'fw-bold' : '' }}"><i class="bi bi-tags"></i> Tag Management</a>
         </li>
         <li class="nav-item">
             <a href="#" class="nav-link text-white {{ request()->routeIs('admin.dashboard') ? 'fw-bold' : '' }}"><i class="bi bi-chat-dots"></i> Comment Management</a>
