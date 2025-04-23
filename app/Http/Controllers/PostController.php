@@ -13,37 +13,19 @@ use App\Models\Tag;
 use App\Models\User;
 use App\Notifications\AuthorsPublishPost;
 use App\Notifications\FollowingsPublishPost;
+use App\QueryFilters\PostFilter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
-    public function index(Request $request)
+    public function index(PostFilter $filters)
     {
-        $query = Post::where('status', 'published')
-            ->orderBy('published_at', 'desc');
-
-        // Filter by category
-        if ($request->has('category') && !empty($request->category)) {
-            $categorySlug = $request->category;
-            $query->whereHas('category', function ($q) use ($categorySlug) {
-                $q->where('slug', $categorySlug);
-            });
-        }
-
-        // Kết hợp nhiều tag (AND logic)
-        if ($request->has('tags') && !empty($request->tags)) {
-            $tagSlugs = $request->tags;
-            foreach ($tagSlugs as $tagSlug) {
-                $query->whereHas('tags', function ($q) use ($tagSlug) {
-                    $q->where('slug', trim($tagSlug));
-                });
-            }
-        }
-        $posts = $query->paginate(12)->appends($request->all());
-        $categories = Category::orderBy('name')->get();
-        $tags = Tag::orderBy('name')->get();
+        $posts = Post::filter($filters)->where('status', 'published')
+            ->orderBy('published_at', 'desc')->paginate(10);
+        $categories = Category::whereHas('posts')->orderBy('name')->get();
+        $tags = Tag::whereHas('posts')->orderBy('name')->get();
         return view('posts.index', compact('posts', 'categories', 'tags'));
     }
 
@@ -168,14 +150,28 @@ class PostController extends Controller
     public function edit(string $slug)
     {
         $post = Post::where('slug', $slug)->firstOrFail();
+        $user_id = $post->user_id;
         $tags = Tag::whereHas('posts')->orderBy('name')->get();
         $categories = Category::orderBy('name')->get();
-        return view('posts.update', compact('categories', 'post', 'tags'));
+
+        if(Auth::id() === $user_id)
+        {
+            return view('posts.update', compact('categories', 'post', 'tags'));
+        }
+
+        return redirect()->back()->with('error', 'You are unauthorized to edit post');
     }
 
     public function update(PostUpdateRequestValidate $request, string $slug)
     {
         $post = Post::where('slug', $slug)->firstOrFail();
+        $user_id = $post->user_id;
+
+        if(Auth::id() !== $user_id)
+        {
+            return redirect()->back()->with('error', 'You are unauthorized to update post');
+        }
+
         if ($request->hasFile('thumbnail')) {
             $thumbnailPath = 'storage/' . $request->file('thumbnail')->store('thumbnails', 'public');
             $post->thumbnail = $thumbnailPath;
@@ -205,8 +201,15 @@ class PostController extends Controller
     public function delete(string $slug)
     {
         $post = Post::where('slug', $slug)->firstOrFail();
-        $post->delete();
-        return redirect()->back()->with('success', 'Post deleted successfully!');
+        $user_id = $post->user_id;
+        
+        if(Auth::id() === $user_id)
+        {
+            $post->delete();
+            return redirect()->back()->with('success', 'Post deleted successfully!');
+        }
+
+        return redirect()->back()->with('error', 'You are unauthorized to delete post');
     }
 
     private static function relatedPosts($post)

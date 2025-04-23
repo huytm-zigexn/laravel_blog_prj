@@ -26,7 +26,7 @@ class UserFollowed extends Notification
         return [
             'user_id' => $this->user->id,
             'user_name' => $this->user->name,
-            'user_avatar' => $this->user->avatar,
+            'user_avatar' => asset($this->user->avatar),
             'message' => '<a href="' . route('user.show', $this->user->id) . '">' . $this->user->name . '</a>' . ' has followed you!',
         ];
     }
@@ -36,7 +36,7 @@ class UserFollowed extends Notification
         return new BroadcastMessage([
             'user_id' => $this->user->id,
             'user_name' => $this->user->name,
-            'user_avatar' => $this->user->avatar,
+            'user_avatar' => asset($this->user->avatar),
             'message' => '<a href="' . route('user.show', $this->user->id) . '">' . $this->user->name . '</a>' . ' has followed you!',
         ]);
     }

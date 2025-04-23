@@ -3,56 +3,44 @@
 @section('title', 'All Posts')
 
 @section('content')
+<div style="margin: 40px">
     <h1 class="text-center mb-5" style="font-weight: bold; font-size: 35px; margin-top: 80px">All Posts</h1>
-    <div class="row" style="margin-left: 20px">
+    <form action="{{ route('user.posts.index') }}" method="GET" class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="filter-sidebar">
-                <h2>Bộ lọc</h2>
-                
-                <form action="{{ route('user.posts.index') }}" method="GET" id="filter-form">
-                    <!-- Category Filter -->
-                    <div class="d-flex justify-content-center">
-                        <div class="filter-section" style="margin: 0 20px">
-                            <h5>Danh mục</h5>
-                            <div class="form-group">
-                                <select name="category" class="form-control filter-select">
-                                    <option value="">Tất cả danh mục</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->slug }}" {{ request('category') == $category->slug ? 'selected' : '' }}>
-                                            {{ $category->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <!-- Tags Filter -->
-                        <div class="filter-section" style="margin: 0 20px">
-                            <h5>Thẻ</h5>
-                            <div class="tag-list">
-                                @foreach($tags as $tag)
-                                <div class="form-check">
-                                    <input type="checkbox" name="tags[]" value="{{ $tag->slug }}" 
-                                        class="form-check-input tag-checkbox"
-                                        @php
-                                            $selectedTags = array_filter((array) request('tags')); // loại bỏ các giá trị rỗng
-                                        @endphp
-                                        {{ in_array($tag->slug, $selectedTags) ? 'checked' : '' }}>
-                                    <label class="form-check-label">{{ $tag->name }}</label>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                    <div class="filter-actions">
-                        <button type="submit" class="btn btn-primary">Áp dụng</button>
-                        <a href="{{ route('user.posts.index') }}" class="btn btn-outline-secondary">Xóa bộ lọc</a>
-                    </div>
-                </form>
-            </div>
+            <input type="text" name="search" class="form-control" placeholder="Search by title"
+                   value="{{ request('search') }}">
         </div>
-    </div>
-    <div class="row row-cols-5" style="margin: 20px">
+
+        <div class="col-md-3">
+            <select name="categoryId" class="form-select form-control">
+                <option value="">-- Category --</option>
+                @foreach ($categories as $category)
+                    <option value="{{ $category->id }}"
+                        {{ request('categoryId') == $category->id ? 'selected' : '' }}>
+                        {{ $category->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select name="tagIds[]" class="form-control" multiple>
+                <option value="">-- Tag --</option>
+                @foreach ($tags as $tag)
+                    <option value="{{ $tag->id }}"
+                        {{ collect(request('tagIds'))->contains($tag->id) ? 'selected' : '' }}>
+                        {{ $tag->name }}
+                    </option>
+                @endforeach
+            </select>        
+        </div>
+
+        <div class="gap-2">
+            <button class="btn btn-primary" type="submit">Submit</button>
+            <a class="btn btn-primary" href="{{ route('user.posts.index') }}">Clear filter</a>
+        </div>
+    </form>
+    <div class="row row-cols-5">
         @if ($posts->count() <= 0)
             <h1>Can't find suitable blogs</h1>
         @else
@@ -65,36 +53,6 @@
             @endforeach
         @endif
     </div>
-@endsection
-
-@section('scripts')
-<script>
-    $(document).ready(function() {
-        // Xử lý chọn nhiều tag
-        $('.tag-checkbox').on('change', function() {
-            var selectedTags = [];
-            $('.tag-checkbox:checked').each(function() {
-                selectedTags.push($(this).val());
-            });
-            $('#tags-input').val(selectedTags.join(','));
-        });
-        
-        // Xử lý xóa một tag từ active filters
-        $('.remove-tag').on('click', function(e) {
-            e.preventDefault();
-            var tagToRemove = $(this).data('tag');
-            var currentTags = $('#tags-input').val().split(',');
-            var newTags = currentTags.filter(function(tag) {
-                return tag !== tagToRemove;
-            });
-            $('#tags-input').val(newTags.join(','));
-            $('#filter-form').submit();
-        });
-        
-        // Tự động submit form khi chọn category hoặc date
-        $('.filter-select').on('change', function() {
-            $('#filter-form').submit();
-        });
-    });
-</script>
+    {{ $posts->withQueryString()->links('pagination::bootstrap-5') }}
+</div>
 @endsection

@@ -79,7 +79,7 @@
             <div class="col-md-8">
                 <div class="d-flex align-items-center mb-4" style="justify-content: space-between">
                     <h3>{{ $user->name }}'s posts</h3>
-                    @if (notReader(Auth::user()))
+                    @if (notReader(Auth::user()) && Auth::id() === $user->id)
                         <a style="" class="btn btn-primary" href="{{ route(Auth::user()->role . '.posts.create') }}">Create post</a>
                     @endif
                 </div>
@@ -92,7 +92,7 @@
                                     <div class="d-flex align-items-center" style="justify-content: space-between">
                                         <a href="{{ route('posts.show', $post->slug) }}" class="btn btn-sm btn-outline-primary">Read more</a>
                                         <div class="d-flex">
-                                            @if (notReader(Auth::user()))
+                                            @if (notReader(Auth::user()) && Auth::id() === $user->id)
                                                 @if ($post->status === 'draft')
                                                     <form style="margin-right: 10px" action="{{ route(Auth::user()->role . '.posts.publish', $post->slug) }}" method="POST">
                                                         @csrf

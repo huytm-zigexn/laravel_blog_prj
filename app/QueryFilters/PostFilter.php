@@ -2,7 +2,6 @@
 
 namespace App\QueryFilters;
 
-use Illuminate\Support\Facades\Log;
 use Kblais\QueryFilter\QueryFilter;
 
 class PostFilter extends QueryFilter

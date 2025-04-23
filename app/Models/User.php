@@ -50,6 +50,13 @@ class User extends Authenticatable
         ];
     }
 
+    public function getAvatarAttribute($value)
+    {
+        return $value 
+            ? asset($value) 
+            : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=0D8ABC&color=fff&size=40';
+    }
+
     public function followers()
     {
         return $this->belongsToMany(User::class, 'follows', 'followed_id', 'follower_id');

@@ -31,7 +31,7 @@
         <!-- Tweaks for older IEs-->
         <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
         <script src="https://kit.fontawesome.com/ae75e06636.js" crossorigin="anonymous"></script>
-        <!-- owl stylesheets --> 
+        <!-- owl stylesheets -->
         <link rel="stylesheet" href="{{ asset('css/owl.carousel.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/owl.theme.default.min.css') }}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
@@ -112,11 +112,11 @@
                 width: 250px;
                 transition: all 0.3s;
             }
-        
+
             .admin-wrapper.sidebar-collapsed .admin-sidebar {
                 margin-left: -250px;
             }
-        
+
             @media (max-width: 768px) {
                 .admin-sidebar {
                     position: fixed;
@@ -127,11 +127,11 @@
                     z-index: 999;
                     transform: translateX(-100%);
                 }
-        
+
                 .admin-wrapper.sidebar-open .admin-sidebar {
                     transform: translateX(0);
                 }
-        
+
                 .content-wrapper {
                     padding-left: 1rem;
                 }
@@ -140,7 +140,7 @@
     </head>
     <body>
         @include('partials/header')
-        <!-- about section start --> 
+        <!-- about section start -->
         @if (Request::is('admin*'))
             <div class="admin-wrapper d-flex">
                 <div class="admin-sidebar">
@@ -156,18 +156,18 @@
         @else
             @yield('content')
         @endif
-        
+
         @include('partials/footer')
         <!-- Javascript files-->
         <script src="js/jquery.min.js"></script>
         <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.bundle.min.js"></script>
         <script src="js/jquery-3.0.0.min.js"></script>
-        <script src="js/plugin.js"></script>
+        {{-- <script src="js/plugin.js"></script> --}}
         <!-- sidebar -->
         <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
         <script src="js/custom.js"></script>
-        <!-- javascript --> 
+        <!-- javascript -->
         <script src="js/owl.carousel.js"></script>
         <script src="{{ asset('js/app.js') }}"></script>
         <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
@@ -175,7 +175,7 @@
             document.addEventListener('DOMContentLoaded', function () {
                 const wrapper = document.querySelector('.admin-wrapper');
                 const toggleBtn = document.getElementById('toggleSidebar');
-        
+
                 if (toggleBtn) {
                     toggleBtn.addEventListener('click', function () {
                         if (window.innerWidth < 768) {
