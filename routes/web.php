@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\admin\CategoryController;
 use App\Http\Controllers\admin\CommentController as AdminCommentController;
+use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\PostController as AdminPostController;
 use App\Http\Controllers\admin\TagController;
 use App\Http\Controllers\admin\UserController as AdminUserController;
@@ -40,9 +41,7 @@ Route::middleware('auth')->group(function() {
     Route::get('/notifications', [UserController::class, 'notifications'])->name('follow.noti');
     
     Route::prefix('admin')->middleware(EnsureHasRole::class.':admin')->group(function() {
-        Route::get('/dashboard', function() {
-            return view('admin.dashboard');
-        })->name('admin.dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
         Route::resource('users', AdminUserController::class)->except(['create', 'store', 'update']);
         Route::put('users/{id}', [AdminUserController::class, 'update'])->name('users.update');
 

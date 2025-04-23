@@ -21,9 +21,6 @@
         <li class="nav-item">
             <a href="{{ route('admin.comments.index') }}" class="nav-link text-white {{ request()->routeIs('admin.comments.index') ? 'fw-bold' : '' }}"><i class="bi bi-chat-dots"></i> Comment Management</a>
         </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link text-white {{ request()->routeIs('admin.dashboard') ? 'fw-bold' : '' }}"><i class="bi bi-bar-chart"></i> Statistics</a>
-        </li>
     </ul>
 </div>
 

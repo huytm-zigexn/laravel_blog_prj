@@ -35,6 +35,7 @@
         <link rel="stylesheet" href="{{ asset('css/owl.carousel.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/owl.theme.default.min.css') }}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+
         <!-- Scripts -->
         <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
         <script src="{{ asset('vendor/file-manager/js/file-manager.js') }}"></script>
@@ -137,6 +138,7 @@
                 }
             }
         </style>
+        @livewireStyles
     </head>
     <body>
         @include('partials/header')
@@ -187,5 +189,7 @@
                 }
             });
         </script>
+        @yield('scripts')
+        @livewireScripts
     </body>
 </html>

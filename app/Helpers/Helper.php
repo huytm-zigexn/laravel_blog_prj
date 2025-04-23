@@ -3,6 +3,7 @@
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 function hasLiked(Post $post)
@@ -30,4 +31,9 @@ function queryAscDesc($key)
         $query[$key] = request($key) === 'asc' ? 'desc' : 'asc';
     }
     return $query;
+}
+
+function createMonthName($m)
+{
+    Carbon::create()->month($m)->format('F');
 }

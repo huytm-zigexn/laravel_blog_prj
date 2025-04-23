@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class PostView extends Model
 {
     use HasFactory;
-    
+    protected $fillable = ['post_id', 'user_id', 'ip_address', 'viewed_at'];
 }

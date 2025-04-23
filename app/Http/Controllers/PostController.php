@@ -9,6 +9,7 @@ use App\Http\Requests\PostRequestValidate;
 use App\Http\Requests\PostUpdateRequestValidate;
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\PostView;
 use App\Models\Tag;
 use App\Models\User;
 use App\Notifications\AuthorsPublishPost;
@@ -16,6 +17,7 @@ use App\Notifications\FollowingsPublishPost;
 use App\QueryFilters\PostFilter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request as FacadesRequest;
 use Illuminate\Support\Str;
 
 class PostController extends Controller
@@ -43,6 +45,27 @@ class PostController extends Controller
     public function show(string $slug)
     {
         $post = Post::where('slug', $slug)->firstOrFail();
+
+        $userId = Auth::check() ? Auth::id() : null;
+        $ip = FacadesRequest::ip();
+
+        $alreadyViewed = PostView::where('post_id', $post->id)
+            ->when($userId, function ($query) use ($userId) {
+                return $query->where('user_id', $userId);
+            }, function ($query) use ($ip) {
+                return $query->where('ip_address', $ip);
+            })
+            ->exists();
+
+        if (!$alreadyViewed) {
+            PostView::create([
+                'post_id' => $post->id,
+                'user_id' => $userId,
+                'ip_address' => $ip,
+                'viewed_at' => now(),
+            ]);
+        }
+
         $relatedPosts = self::relatedPosts($post);
         return view('posts.show', compact('post', 'relatedPosts'));
     }
