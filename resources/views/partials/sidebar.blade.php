@@ -10,7 +10,7 @@
             <a href="{{ route('users.index') }}" class="nav-link text-white {{ request()->routeIs('users.index', 'users.edit', 'users.show') ? 'fw-bold' : '' }}"><i class="bi bi-person"></i> User Management</a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('admin.posts.index') }}" class="nav-link text-white {{ request()->routeIs('admin.posts.index', 'admin.posts.create', 'admin.posts.edit', 'admin.posts.show') ? 'fw-bold' : '' }}"><i class="bi bi-file-earmark-text"></i> Post Management</a>
+            <a href="{{ route('admin.posts.index') }}" class="nav-link text-white {{ request()->routeIs('admin.posts.index', 'admin.posts.create', 'admin.posts.edit', 'admin.posts.show', 'admin.posts.crawl') ? 'fw-bold' : '' }}"><i class="bi bi-file-earmark-text"></i> Post Management</a>
         </li>
         <li class="nav-item">
             <a href="{{ route('categories.index') }}" class="nav-link text-white {{ request()->routeIs('categories.index', 'categories.edit', 'categories.create') ? 'fw-bold' : '' }}"><i class="bi bi-folder"></i> Category Management</a>

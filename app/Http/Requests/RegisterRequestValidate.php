@@ -30,7 +30,7 @@ class RegisterRequestValidate extends FormRequest
                 'string',
                 'regex:/^(\\+84\\d{9}|0\\d{9})$/'
             ],
-            'role' => 'in:admin,author,reader',
+            'role' => 'in:admin,author,reader,crawler',
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ];
     }

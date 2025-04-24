@@ -58,6 +58,7 @@
     </form>
 
     <a style="margin-bottom: 20px" class="btn btn-primary" href="{{ route('admin.posts.create') }}">Create post</a>
+    <a style="margin-bottom: 20px" class="btn btn-success" href="{{ route('admin.posts.crawl') }}">Crawl post</a>
 
     <div class="table-responsive">
         <table class="table table-bordered table-hover align-middle">

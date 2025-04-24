@@ -26,7 +26,7 @@ class LoginRequestValidate extends FormRequest
             'email' => 'required',
             'password' => 'required',
             'phone' => 'required',
-            'role' => 'in:admin,author,reader',
+            'role' => 'in:admin,author,reader,crawler',
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ];
     }

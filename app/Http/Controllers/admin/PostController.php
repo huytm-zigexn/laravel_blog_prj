@@ -184,6 +184,11 @@ class PostController extends Controller
         $post->delete();
         return redirect()->back()->with('success', 'Post deleted successfully!');
     }
+
+    public function getCrawl()
+    {
+        return view('admin.posts.crawl');
+    }
 }
 
 

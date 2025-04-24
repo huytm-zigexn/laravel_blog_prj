@@ -30,6 +30,7 @@ class PostFactory extends Factory
             'is_crawled' => false,
             'source_url' => null,
             'source_name' => null,
+            'source_author' => null,
             'crawled_at' => null,
             'original_id' => null,
             'user_id' => User::inRandomOrder()->first()?->id ?? User::factory(),

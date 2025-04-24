@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function() {
         Route::get('/posts-management', [AdminPostController::class, 'index'])->name('admin.posts.index');
         Route::get('/posts-management/create', [AdminPostController::class, 'getCreate'])->name('admin.posts.create');
         Route::post('/posts-management/store', [AdminPostController::class, 'store'])->name('admin.posts.store');
+        Route::get('/posts-management/crawl', [AdminPostController::class, 'getCrawl'])->name('admin.posts.crawl');
         Route::get('/posts-management/{slug}', [AdminPostController::class, 'show'])->name('admin.posts.show');
         Route::get('/posts-management/{slug}/edit', [AdminPostController::class, 'edit'])->name('admin.posts.edit');
         Route::put('/posts-management/{slug}/update', [AdminPostController::class, 'update'])->name('admin.posts.update');

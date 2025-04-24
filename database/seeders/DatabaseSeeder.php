@@ -22,7 +22,19 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Seed Users, Categories, Tags, Notifications
-        User::factory(10)->create();
+        User::factory(10)->create()->each(function ($user) {
+            $user->update([
+                'created_at' => now()->subDays(rand(1, 30)),
+            ]);
+        });        
+
+        User::factory()->create([
+            'name' => 'Crawler',
+            'email' => 'crawler@example.com',
+            'phone' => '0123456789',
+            'role' => 'crawler',
+            'password' => bcrypt('crawler123'), // hoặc Hash::make('admin123')
+        ]);
 
         User::factory()->create([
             'name' => 'Admin User',
@@ -38,16 +50,26 @@ class DatabaseSeeder extends Seeder
 
         // Seed Posts with Tags, Media, and Media_Post relationship
         Post::factory(20)->create()->each(function ($post) {
+            $post->update([
+                'created_at' => now()->subDays(rand(1, 30)),
+                'updated_at' => now()->subDays(rand(1, 30)),
+                'published_at' => now()->subDays(rand(1, 30)),
+            ]);
+        
             // Attach random tags (1-3)
             $tagIds = Tag::inRandomOrder()->take(rand(1, 3))->pluck('id');
             $post->tags()->attach($tagIds);
-        });
+        });        
 
         // Seed Likes
         Like::factory(50)->create();
 
         // Seed Post Views
-        PostView::factory(100)->create();
+        PostView::factory(100)->create()->each(function ($view) {
+            $view->update([
+                'created_at' => now()->subDays(rand(1, 30)),
+            ]);
+        });        
 
         $users = User::pluck('id')->toArray();
         $followPairs = [];

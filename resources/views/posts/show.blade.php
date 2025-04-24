@@ -19,6 +19,9 @@
             <div class="card-text" style="font-size: 1.1rem;">
                 {!! $post->content !!}
             </div>
+            @if ($post->source_url)
+                <a href="{{ $post->source_url }}">Source: {{$post->source_url}}</a>
+            @endif
         </div>
     </div>
 
