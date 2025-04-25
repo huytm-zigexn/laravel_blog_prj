@@ -11,11 +11,17 @@
             @livewire('most-popular-post-card')
             @livewire('most-popular-category-card')
         </div>
-        <div class="row" style="margin-bottom: 100px">
+        <div class="row d-flex" style="margin-bottom: 100px">
             @livewire('users-quantity-chart')
+        </div>
+        <div class="row d-flex" style="margin-bottom: 100px">
+            @livewire('posts-origin-crawl-chart')
         </div>
         <div class="row" style="margin-bottom: 100px">
             @livewire('post-views-chart')
+        </div>
+        <div class="row" style="margin-bottom: 100px">
+            @livewire('crawled-post-views-by-source-name-chart')
         </div>
         <div class="row" style="margin-bottom: 100px">
             @livewire('posts-quantity-by-publish-chart')
