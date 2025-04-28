@@ -21,7 +21,7 @@ class PostController extends Controller
 {
     public function index(PostFilter $filters)
     {
-        $authors = User::whereIn('role', ['author', 'admin'])
+        $authors = User::whereIn('role', ['author', 'admin', 'crawler'])
                ->whereHas('posts')
                ->orderBy('name')
                ->get();
@@ -118,14 +118,14 @@ class PostController extends Controller
             }
         }
 
-        return redirect()->route('admin.posts.index')->with('success', 'Post created successfully');
+        return redirect()->route('admin.posts.show', $post->slug)->with('success', 'Post created successfully');
     }
 
     public function edit(string $slug)
     {
         $post = Post::where('slug', $slug)->firstOrFail();
         $categories = Category::orderBy('name')->get();
-        $authors = User::whereIn('role', ['author', 'admin'])->get();
+        $authors = User::whereIn('role', ['author', 'admin', 'crawler'])->get();
         $tags = Tag::whereHas('posts')->orderBy('name')->get();
         $status = ['draft', 'published'];
 

@@ -121,9 +121,6 @@
                         <a class="nav-link" href="{{ route('app') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="about.html">About</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('user.posts.index') }}">Blog</a>
                     </li>
                     @auth
@@ -186,9 +183,6 @@
                             <a class="nav-link" href={{ route('getLogin') }}>Login</a>
                         </li>
                     @endauth
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><img src="{{ asset('/images/serach-icon.png') }}"></a>
-                    </li>
                 </ul>
             </div>
         </nav>

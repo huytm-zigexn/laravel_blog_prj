@@ -25,8 +25,8 @@ services:
             - mysql
             - redis
             - meilisearch
-            - mailpit
             - selenium
+            - maildev
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -85,11 +85,11 @@ services:
                 - 'http://127.0.0.1:7700/health'
             retries: 3
             timeout: 5s
-    mailpit:
-        image: 'axllent/mailpit:latest'
+    maildev:
+        image: maildev/maildev
         ports:
-            - '${FORWARD_MAILPIT_PORT:-1025}:1025'
-            - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+            - "1025:1025"
+            - "1080:1080"
         networks:
             - sail
     selenium:

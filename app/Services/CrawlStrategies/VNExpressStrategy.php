@@ -15,6 +15,9 @@ class VNExpressStrategy implements WebCrawlStrategy
         // Cấu trúc DOM khác cho website 2
         $content = null;
         $contentElement = $dom->filter('.detail-photo');
+        if ($contentElement->count() <= 0) {
+            $contentElement = $dom->filter('.top-detail');
+        }
         if ($contentElement->count() > 0) {
             $container = $contentElement->filter('.container');
             if ($container->count() > 0) {

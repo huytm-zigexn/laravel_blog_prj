@@ -7,6 +7,7 @@ use App\Http\Requests\EditUserProfileValidate;
 use App\Http\Requests\LoginRequestValidate;
 use App\Http\Requests\RegisterRequestValidate;
 use App\Http\Requests\ResetPasswordRequestValidate;
+use App\Mail\WelcomeMail;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\User;
@@ -14,6 +15,7 @@ use App\Notifications\UserFollowed;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -34,6 +36,7 @@ class UserController extends Controller
     {
         $request['password'] = bcrypt($request['password']);
         $user = User::create($request->validated());
+        Mail::to($user->email)->send(new WelcomeMail($user));
         Auth::login($user);
 
         return redirect('/');
@@ -146,7 +149,7 @@ class UserController extends Controller
             $message = 'Nothing changes.';
         }
         
-        return redirect()->route('users.show', ['user' => $user->id])->with('success', $message);
+        return redirect()->route('user.show', $user->id)->with('success', $message);
     }
 
     public function likedPostsList()

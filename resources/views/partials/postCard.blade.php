@@ -1,14 +1,14 @@
 <div class="post-wrapper">
-    @if(Auth::check() && notReader(Auth::user()))
+    @if(Auth::check() && notReader(Auth::user()) && isYourPost(Auth::user(), $post))
         <a class="postED" style="position: absolute; top: 2%; right: 5%; z-index: 999" href="#">
             <i style="font-size: 34px; color:aliceblue" class="fa-solid fa-ellipsis-vertical"></i>
         </a>
         <ul class="postED-container shadow-lg" style="display: none; position: absolute; z-index: 9999; top: 7%; right: 5%; background-color: #fff; padding: 30px 30px; border-radius: 10px;">
             <li style="margin-bottom: 20px; background-color: green; padding: 10px; border-radius: 10px" class="nav-item">
-                    <a style="color: #fff; font-weight: 500" href="{{ route(Auth::user()->role . '.posts.edit', $post->slug) }}">Update post</a>
+                    <a style="color: #fff; font-weight: 500" href="{{ 'posts.edit', $post->slug }}">Update post</a>
             </li>
             <li style="background-color: red; padding: 10px; border-radius: 10px" class="nav-item">
-                <form action="{{ route(Auth::user()->role . '.posts.delete', $post->slug) }}" method="POST">
+                <form action="{{ 'posts.delete', $post->slug }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <input style="font-weight: 500; background-color: red; border: none; color: #fff" type="submit" value="Delete post">

@@ -13,7 +13,7 @@
     
     <div class="container">
         @if (notReader(Auth::user()))
-            <a style="margin-bottom: 100px; font-size: 28px" class="btn btn-primary" href="{{ route(Auth::user()->role . '.posts.create') }}">Create post</a>
+            <a style="margin-bottom: 100px; font-size: 28px" class="btn btn-primary" href="{{ 'posts.create' }}">Create post</a>
         @endif
         <h1 style="font-weight: bold; font-size: 40px; margin-bottom: 40px">Most views posts</h1>
         @foreach ($posts as $post)

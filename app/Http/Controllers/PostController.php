@@ -24,11 +24,15 @@ class PostController extends Controller
 {
     public function index(PostFilter $filters)
     {
+        $authors = User::whereIn('role', ['author', 'admin', 'crawler'])
+               ->whereHas('posts')
+               ->orderBy('name')
+               ->get();
         $posts = Post::filter($filters)->where('status', 'published')
             ->orderBy('published_at', 'desc')->paginate(10);
         $categories = Category::whereHas('posts')->orderBy('name')->get();
         $tags = Tag::whereHas('posts')->orderBy('name')->get();
-        return view('posts.index', compact('posts', 'categories', 'tags'));
+        return view('posts.index', compact('posts', 'categories', 'tags', 'authors'));
     }
 
     public function mostViewsPosts()
@@ -144,6 +148,7 @@ class PostController extends Controller
     {
         $post = Post::where('slug', $slug)->firstOrFail();
         $post->status = 'published';
+        $post->published_at = now();
         $post->save();
         $authUser = User::findOrFail(Auth::id());
         event(new FollowingsPublishPostNotify([

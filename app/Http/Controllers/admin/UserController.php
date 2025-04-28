@@ -1,9 +1,11 @@
 <?php
 namespace App\Http\Controllers\admin;
 
+use App\Events\FollowNotify;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminEditUserValidate;
 use App\Models\User;
+use App\Notifications\UserFollowed;
 use App\QueryFilters\UserFilter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -59,5 +61,33 @@ class UserController extends Controller
         }
         $user->delete();
         return back()->with('success', 'Xóa người dùng thành công');
+    }
+
+    public function follow($id)
+    {
+        $user = User::findOrFail($id);
+        $authUser = Auth::user();
+        if (Auth::id() === $user->id) {
+            return redirect()->back()->with('error', 'You can not follow yourself!');
+        }
+
+        $result = $authUser->followings()->toggle($user->id);
+        
+        if (count($result['attached']) > 0) {
+            $message = 'Followed ' . $user->name;
+            event(new FollowNotify([
+                'message' => '<a href="' . route('user.show', $authUser->id) . '">' . $authUser->name . '</a>' . ' has followed you!',
+                'user_id' => $authUser->id,
+                'user_name' => $authUser->name,
+                'user_avatar' => $authUser->avatar
+            ]));
+            $user->notify(new UserFollowed($authUser));
+        } elseif (count($result['detached']) > 0) {
+            $message = 'Unfollowed ' . $user->name;
+        } else {
+            $message = 'Nothing changes.';
+        }
+        
+        return redirect()->route('users.show', ['user' => $user->id])->with('success', $message);
     }
 }

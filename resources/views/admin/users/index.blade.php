@@ -16,6 +16,10 @@
     </form>
     <h3 style="font-weight: bold" class="text-center mb-4">Users Management</h3>
 
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
     <table class="table table-bordered table-hover align-middle">
         <thead class="table-dark">
             <tr>

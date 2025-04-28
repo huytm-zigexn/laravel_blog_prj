@@ -12,6 +12,17 @@
         </div>
 
         <div class="col-md-3">
+            <select name="filterUserId" class="form-select">
+                <option value="">-- Author --</option>
+                @foreach ($authors as $author)
+                    <option value="{{ $author->id }}" {{ request('filterUserId') == $author->id ? 'selected' : '' }}>
+                        {{ $author->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="col-md-3">
             <select name="categoryId" class="form-select form-control">
                 <option value="">-- Category --</option>
                 @foreach ($categories as $category)

@@ -4,7 +4,6 @@
         <div class="footer_menu">
             <ul>
                 <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
                 <li><a href="blog.html">Blog</a></li>
                 <li><a href="contact.html">contact us</a></li>
             </ul>

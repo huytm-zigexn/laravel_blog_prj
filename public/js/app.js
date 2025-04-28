@@ -1,52 +1,41 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const notiBtn = document.querySelector('.nav-noti');
-    const notiContainer = document.querySelector('.noti-container');
+$(document).ready(function () {
+    const $notiBtn = $('.nav-noti');
+    const $notiContainer = $('.noti-container');
 
-    notiBtn.addEventListener('click', function (e) {
-        e.preventDefault(); // ngăn chuyển trang nếu href="#"
-        notiContainer.style.display = 
-            (notiContainer.style.display === 'none' || notiContainer.style.display === '') 
-                ? 'block' 
-                : 'none';
+    $notiBtn.on('click', function (e) {
+        e.preventDefault();
+        $notiContainer.toggle(); // toggle giữa show/hide
     });
 
-    // Optional: Ẩn khi click bên ngoài
-    document.addEventListener('click', function (e) {
-        if (!notiBtn.contains(e.target) && !notiContainer.contains(e.target)) {
-            notiContainer.style.display = 'none';
+    $(document).on('click', function (e) {
+        if (!$(e.target).closest('.nav-noti, .noti-container').length) {
+            $notiContainer.hide();
         }
     });
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    const postWrappers = document.querySelectorAll('.post-wrapper');
+$(document).ready(function () {
+    const $postWrappers = $('.post-wrapper');
 
-    postWrappers.forEach(wrapper => {
-        const notiBtn = wrapper.querySelector('.postED');
-        const notiContainer = wrapper.querySelector('.postED-container');
+    $postWrappers.each(function () {
+        const $wrapper = $(this);
+        const $notiBtn = $wrapper.find('.postED');
+        const $notiContainer = $wrapper.find('.postED-container');
 
-        notiBtn.addEventListener('click', function (e) {
+        $notiBtn.on('click', function (e) {
             e.preventDefault();
 
-            // Toggle hiển thị container này, ẩn các container khác
-            document.querySelectorAll('.postED-container').forEach(container => {
-                if (container !== notiContainer) {
-                    container.style.display = 'none';
-                }
-            });
+            // Ẩn tất cả các container khác
+            $('.postED-container').not($notiContainer).hide();
 
-            notiContainer.style.display =
-                (notiContainer.style.display === 'none' || notiContainer.style.display === '')
-                    ? 'block'
-                    : 'none';
+            // Toggle cái container đang bấm
+            $notiContainer.toggle();
         });
 
-        // Ẩn khi click bên ngoài
-        document.addEventListener('click', function (e) {
-            if (!wrapper.contains(e.target)) {
-                notiContainer.style.display = 'none';
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest($wrapper).length) {
+                $notiContainer.hide();
             }
         });
     });
 });
-

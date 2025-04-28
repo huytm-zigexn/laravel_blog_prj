@@ -55,7 +55,7 @@
 
                         <hr class="my-4">
 
-                        <div class="text-start ps-3">
+                        <div class="ps-3">
                             <p><strong>Phone number:</strong> {{ $user->phone }}</p>
                             <p><strong>Role:</strong> <span class="badge bg-primary text-uppercase" style="color: #fff">{{ $user->role }}</span></p>
                             <p><strong>Joined from:</strong> {{ $user->created_at->format('d/m/Y') }}</p>
@@ -80,7 +80,7 @@
                 <div class="d-flex align-items-center mb-4" style="justify-content: space-between">
                     <h3>{{ $user->name }}'s posts</h3>
                     @if (notReader(Auth::user()) && Auth::id() === $user->id)
-                        <a style="" class="btn btn-primary" href="{{ route(Auth::user()->role . '.posts.create') }}">Create post</a>
+                        <a style="" class="btn btn-primary" href="{{ route('posts.create') }}">Create post</a>
                     @endif
                 </div>
                 <div style="max-height: 600px; overflow-y: auto;">
@@ -94,17 +94,17 @@
                                         <div class="d-flex">
                                             @if (notReader(Auth::user()) && Auth::id() === $user->id)
                                                 @if ($post->status === 'draft')
-                                                    <form style="margin-right: 10px" action="{{ route(Auth::user()->role . '.posts.publish', $post->slug) }}" method="POST">
+                                                    <form style="margin-right: 10px" action="{{ route('posts.publish', $post->slug) }}" method="POST">
                                                         @csrf
                                                         @method('PUT')
                                                         <input class="btn btn-outline-primary" type="submit" value="Publish post">
                                                     </form>
                                                 @endif
-                                                <form style="margin-right: 10px" action="{{ route(Auth::user()->role . '.posts.edit', $post->slug) }}" method="GET">
+                                                <form style="margin-right: 10px" action="{{ route('posts.edit', $post->slug) }}" method="GET">
                                                     @csrf
                                                     <input class="btn btn-outline-success" type="submit" value="Update post">
                                                 </form>
-                                                <form action="{{ route(Auth::user()->role . '.posts.delete', $post->slug) }}" method="POST">
+                                                <form action="{{ route('posts.delete', $post->slug) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <input class="btn btn-outline-danger" type="submit" value="Delete post">

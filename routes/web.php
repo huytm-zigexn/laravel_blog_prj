@@ -11,6 +11,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureHasRole;
+use App\Http\Middleware\EnsureHasRoles;
 use Illuminate\Support\Facades\Route;
 
 
@@ -39,11 +40,21 @@ Route::middleware('auth')->group(function() {
     Route::get('users/{id}/liked-posts-list', [UserController::class, 'likedPostsList'])->name('user.like');
     
     Route::get('/notifications', [UserController::class, 'notifications'])->name('follow.noti');
+
+    Route::middleware(EnsureHasRoles::class . ':admin,author')->group(function() {
+        Route::get('/posts/create', [PostController::class, 'getCreate'])->name('posts.create');
+        Route::post('/posts/store', [PostController::class, 'store'])->name('posts.store');
+        Route::put('/posts/{slug}/publish', [PostController::class, 'publish'])->name('posts.publish');
+        Route::get('/posts/{slug}/edit', [PostController::class, 'edit'])->name('posts.edit');
+        Route::put('/posts/{slug}/update', [PostController::class, 'update'])->name('posts.update');
+        Route::delete('/posts/{slug}/delete', [PostController::class, 'delete'])->name('posts.delete');
+    });
     
     Route::prefix('admin')->middleware(EnsureHasRole::class.':admin')->group(function() {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
         Route::resource('users', AdminUserController::class)->except(['create', 'store', 'update']);
         Route::put('users/{id}', [AdminUserController::class, 'update'])->name('users.update');
+        Route::post('/users/{id}/follow', [AdminUserController::class, 'follow'])->name('admin.user.follow');
 
         Route::get('/posts-management', [AdminPostController::class, 'index'])->name('admin.posts.index');
         Route::get('/posts-management/create', [AdminPostController::class, 'getCreate'])->name('admin.posts.create');
@@ -63,20 +74,11 @@ Route::middleware('auth')->group(function() {
         Route::get('tags/{slug}/edit', [TagController::class, 'edit'])->name('tags.edit');
         Route::put('tags/{slug}/update', [TagController::class, 'update'])->name('tags.update');
 
-        Route::get('/comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
         Route::put('/comments/{id}/approve', [AdminCommentController::class, 'approve'])->name('admin.comments.approve');
+        Route::get('/comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
         Route::delete('/comments/{id}', [AdminCommentController::class, 'destroy'])->name('admin.comments.destroy');
     });
     Route::post('/img-upload', [PostController::class, 'imgUpload'])->name('img.upload');
-    
-    Route::prefix('author')->middleware(EnsureHasRole::class.':author')->group(function() {
-        Route::get('/posts/create', [PostController::class, 'getCreate'])->name('author.posts.create');
-        Route::post('/posts/store', [PostController::class, 'store'])->name('author.posts.store');
-        Route::put('/posts/{slug}/publish', [PostController::class, 'publish'])->name('author.posts.publish');
-        Route::get('/posts/{slug}/edit', [PostController::class, 'edit'])->name('author.posts.edit');
-        Route::put('/posts/{slug}/update', [PostController::class, 'update'])->name('author.posts.update');
-        Route::delete('/posts/{slug}/delete', [PostController::class, 'delete'])->name('author.posts.delete');
-    });
     Route::post('/posts/{slug}/likes', [LikeController::class, 'store'])->name('likes.store');
 });
 

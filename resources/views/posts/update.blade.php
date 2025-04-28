@@ -19,7 +19,7 @@
                                 </ul>
                             </div>
                         @endif
-                        <form action="{{ route(Auth::user()->role . '.posts.update', $post->slug) }}" method="post" enctype="multipart/form-data">
+                        <form action="{{ route('posts.update', $post->slug) }}" method="post" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="form-group">

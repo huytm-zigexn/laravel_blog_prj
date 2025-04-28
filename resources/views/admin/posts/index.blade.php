@@ -60,6 +60,10 @@
     <a style="margin-bottom: 20px" class="btn btn-primary" href="{{ route('admin.posts.create') }}">Create post</a>
     <a style="margin-bottom: 20px" class="btn btn-success" href="{{ route('admin.posts.crawl') }}">Crawl post</a>
 
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
     <div class="table-responsive">
         <table class="table table-bordered table-hover align-middle">
             <thead class="table-light">

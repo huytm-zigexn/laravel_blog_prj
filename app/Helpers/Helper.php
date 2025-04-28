@@ -23,6 +23,11 @@ function isAdmin($user)
     return $user && $user->role === 'admin';
 }
 
+function isYourPost($user, $post)
+{
+    return $user && $user->id === $post->user_id;
+}
+
 function queryAscDesc($key)
 {
     $query = request()->all();

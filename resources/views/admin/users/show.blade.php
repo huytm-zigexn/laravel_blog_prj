@@ -44,7 +44,7 @@
                         </div>
 
                         @if (Auth::user()->id !== $user->id)
-                            <form action="{{ route('user.follow', $user->id) }}" method="post">
+                            <form action="{{ route('admin.user.follow', $user->id) }}" method="post">
                                 @csrf
                                 <button 
                                     onclick="toggleFollow({{ $user->id }})" 

@@ -13,7 +13,7 @@ class CommentController extends Controller
 {
     public function index(CommentFilter $filters)
     {
-        $comments = Comment::filter($filters)->with(['user', 'post'])->latest()->paginate(10);
+        $comments = Comment::whereHas('user')->filter($filters)->with(['user', 'post'])->latest()->paginate(10);
         $posts = Post::whereHas('comments')->orderBy('title')->get();
         $users = User::whereHas('comments')->orderBy('name')->get();
         return view('admin.comments.index', compact('comments', 'posts', 'users'));
@@ -35,7 +35,6 @@ class CommentController extends Controller
             'message' => '<a href="' . route('user.show', $commentedUser->id) . '">' . $commentedUser->name . '</a>' . ' has commented on your <a href="' . route('posts.show', $post->slug) . '">' . $post->title . '</a>',
         ]));
         $user->notify(new UserCommentedPost($commentedUser, $post));
-
         return back()->with('success', 'Comment approved.');
     }
 
